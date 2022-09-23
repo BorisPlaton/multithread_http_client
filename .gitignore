@@ -1,0 +1,6 @@
+venv
+.idea
+__pycache__
+client.py
+auto-restart.sh
+.pytest_cache
