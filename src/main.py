@@ -1,11 +1,11 @@
 import asyncio
 
-from ws_server.server import WebSocketServer
+from ws_server import start_server
 
 
 async def main(host: str, port: int):
-    """Entry point to the program."""
-    await WebSocketServer.start_server(host, port)
+    """Entry point to the program. Starts a websocket server."""
+    await start_server(host, port)
 
 
 if __name__ == '__main__':
