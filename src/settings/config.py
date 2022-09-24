@@ -7,3 +7,5 @@ HTTP_CLIENT_CONFIG_FILE = {}
 
 URLS_MODULE = 'ws_server.paths.app_paths'
 URLS_VARIABLE = 'paths'
+
+BROADCAST_TIMEOUT = 2

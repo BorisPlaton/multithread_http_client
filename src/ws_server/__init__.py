@@ -2,7 +2,7 @@ import asyncio
 
 import websockets
 
-from ws_server.core.base import WebSocketHandler
+from ws_server.core.ws_handler import WebSocketHandler
 
 
 async def start_server(host: str, port: int):
