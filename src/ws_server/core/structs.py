@@ -1,12 +1,15 @@
-from typing import NamedTuple, Any
+from dataclasses import dataclass
+from typing import Any
 
 
-class Response(NamedTuple):
+@dataclass
+class Response:
     """The response which is returned by handler."""
     data: dict
 
 
-class Request(NamedTuple):
+@dataclass
+class Request:
     """
     The abstraction of websocket connection. Represents useful data
     which may be used in handlers.

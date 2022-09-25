@@ -37,10 +37,10 @@ class WebSocketHandler:
         how many connections there are already it may or may not include
         a broadcast coroutine.
         """
-        tasks = [self.accept_new_messages(websocket)]
+        coroutines_list = [self.accept_new_messages(websocket)]
         if len(self.connections) == 1:
-            tasks.append(self.broadcast_response())
-        return tasks
+            coroutines_list.append(self.broadcast_response())
+        return coroutines_list
 
     async def accept_new_messages(self, websocket: WebSocketServerProtocol):
         """
@@ -49,7 +49,8 @@ class WebSocketHandler:
         """
         async for message in websocket:
             request = self.construct_request(websocket, message)
-            self.request_dispatcher.dispatch_request(request)
+            handler_response = self.request_dispatcher.dispatch_request(request)
+            await websocket.send(handler_response)
         else:
             self.connections.remove(websocket)
 

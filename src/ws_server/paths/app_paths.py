@@ -1,6 +1,9 @@
+from dataclasses import dataclass
+
 from ws_server.handlers.handlers import AddNewUrlHandler, HTTPClientStatusHandler
 
 
+@dataclass
 class AppPath:
     """Defines urls that are used in the application."""
     LISTEN_TO_STATUS = '/'
