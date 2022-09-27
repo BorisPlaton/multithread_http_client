@@ -1,8 +1,19 @@
 import pytest
 
+from ws_server.core.structs import Request
+from ws_server.handlers.base import BaseHandler
+
 
 @pytest.mark.ws_server
 class TestBaseHandler:
+
+    @pytest.fixture
+    def base_handler(self):
+        return BaseHandler()
+
+    @pytest.fixture
+    def request_(self):
+        return Request(path='/', data={'hello': 'world'})
 
     def test_handle_method_raises_exception(self, base_handler, request_):
         with pytest.raises(NotImplementedError):

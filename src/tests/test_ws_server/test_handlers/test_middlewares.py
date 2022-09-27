@@ -8,13 +8,21 @@ from ws_server.handlers.middlewares import BaseMiddleware, JSONRequestMiddleware
 @pytest.mark.ws_server
 class TestBaseMiddleware:
 
-    def test_exception_raised_on_call_method(self):
+    @pytest.fixture
+    def base_middleware(self):
+        return BaseMiddleware(lambda x: x)
+
+    def test_exception_raised_on_call_method(self, base_middleware):
         with pytest.raises(NotImplementedError):
-            BaseMiddleware(int)(Request(data='2', path='/'))
+            base_middleware(Request(data='2', path='/'))
 
 
 @pytest.mark.ws_server
 class TestJSONRequestMiddleware:
+
+    @pytest.fixture
+    def json_request_middleware(self):
+        return JSONRequestMiddleware(lambda x: x)
 
     def test_successful_deserialization(self, json_request_middleware):
         json_in_string = """{"hello": "world"}"""
@@ -26,9 +34,8 @@ class TestJSONRequestMiddleware:
             with pytest.raises(RequestDataIsNotJSON):
                 json_request_middleware.deserialize_request_data_to_json(parameter)
 
-    def test_middleware_change_string_json_to_dict(self):
-        json_middleware = JSONRequestMiddleware(lambda x: x)
+    def test_middleware_change_string_json_to_dict(self, json_request_middleware):
         test_request = Request('/', """{"hello": "world"}""")
-        changed_request = json_middleware(test_request)
+        changed_request = json_request_middleware(test_request)
         assert changed_request is test_request
         assert isinstance(changed_request.data, dict)
