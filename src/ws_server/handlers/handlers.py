@@ -1,4 +1,4 @@
-from ws_server.core.structs import Request, Response
+from ws_server.core.structs import Request
 from ws_server.handlers.base import BaseHandler
 from ws_server.handlers.middlewares import JSONRequestMiddleware
 

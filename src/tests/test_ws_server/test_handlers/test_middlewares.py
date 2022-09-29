@@ -1,7 +1,7 @@
 import pytest
 
+from exceptions.server_exceptions import RequestDataIsNotJSON
 from ws_server.core.structs import Request
-from ws_server.exceptions.external import RequestDataIsNotJSON
 from ws_server.handlers.middlewares import BaseMiddleware, JSONRequestMiddleware
 
 

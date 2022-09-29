@@ -1,4 +1,4 @@
-from ws_server.exceptions.base import BaseServerException
+from exceptions.base import BaseServerException
 
 
 class PathDoesNotExist(BaseServerException):
@@ -7,3 +7,7 @@ class PathDoesNotExist(BaseServerException):
 
 class RequestDataIsNotJSON(BaseServerException):
     detail = "You must to specify request data in JSON format."
+
+
+class ResponseIsNotValidType(BaseServerException):
+    detail = "The handler returned response is not valid type."

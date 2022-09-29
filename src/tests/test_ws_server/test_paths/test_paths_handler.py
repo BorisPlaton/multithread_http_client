@@ -1,6 +1,6 @@
 import pytest
 
-from ws_server.exceptions.external import PathDoesNotExist
+from exceptions.server_exceptions import PathDoesNotExist
 from ws_server.paths.paths_handler import PathsHandler
 
 

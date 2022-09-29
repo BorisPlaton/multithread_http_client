@@ -1,7 +1,7 @@
 from typing import Callable
 
+from exceptions.server_exceptions import ResponseIsNotValidType
 from ws_server.core.structs import Request, Response
-from ws_server.exceptions.internal import ResponseIsNotValidType
 from ws_server.handlers.middlewares import BaseMiddleware
 
 

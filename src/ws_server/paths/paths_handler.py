@@ -1,6 +1,6 @@
 from typing import Callable
 
-from ws_server.exceptions.external import PathDoesNotExist
+from exceptions.server_exceptions import PathDoesNotExist
 
 
 class PathsHandler:

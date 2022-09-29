@@ -1,7 +1,7 @@
 from typing import TypedDict
 
 from ws_server.core.structs import Request, Response
-from ws_server.exceptions.base import BaseServerException
+from exceptions.base import BaseServerException
 
 
 class ExceptionResponse(TypedDict):

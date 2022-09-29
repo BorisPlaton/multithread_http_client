@@ -1,1 +1,4 @@
-from settings.config import *
+from settings.config import ProjectSettings
+
+
+settings = ProjectSettings()

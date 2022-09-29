@@ -1,8 +1,8 @@
 import json
 from json import JSONDecodeError
 
+from exceptions.server_exceptions import RequestDataIsNotJSON
 from ws_server.core.structs import Response, Request
-from ws_server.exceptions.external import RequestDataIsNotJSON
 
 
 class BaseMiddleware:

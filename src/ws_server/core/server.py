@@ -4,12 +4,12 @@ from typing import Coroutine
 import websockets
 from websockets.legacy.server import WebSocketServerProtocol
 
-import settings
+from settings import settings
 from ws_server.core.dispatcher import Dispatcher
 from ws_server.core.structs import Request
 
 
-class WebSocketHandler:
+class WebSocketServer:
     """
     Checks if a new websocket connection has an existing path and runs
     a corresponding handler if it is true. Otherwise, raises an exception.

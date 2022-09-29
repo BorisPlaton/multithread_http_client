@@ -1,2 +1,0 @@
-class URLRepository:
-    pass

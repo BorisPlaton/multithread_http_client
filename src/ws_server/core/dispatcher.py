@@ -1,10 +1,10 @@
 import json
 
-from ws_server.core.structs import Request, Response
-from ws_server.exceptions.base import BaseServerException
-from ws_server.exceptions.exception_handlers import (
-    ServerExceptionHandler, BaseExceptionHandler, StandardExceptionHandler
+from exceptions.base import BaseServerException
+from exceptions.exception_handlers import (
+    StandardExceptionHandler, ServerExceptionHandler, BaseExceptionHandler
 )
+from ws_server.core.structs import Request, Response
 from ws_server.paths.app_paths import paths
 from ws_server.paths.paths_handler import PathsHandler
 
