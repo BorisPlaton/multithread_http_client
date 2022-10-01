@@ -11,7 +11,7 @@ def status_code_validation(status_code: int, headers: dict):
 
 def accept_ranges_validation(status_code: int, headers: dict):
     """Validates a response has a `Accept-Ranges` header."""
-    if not headers.get("Accept-Ranges"):
+    if headers.get("Accept-Ranges") != 'bytes':
         raise ValidationException(
             "The remote server doesn't support an `Accept-Ranges` header."
         )
