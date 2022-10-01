@@ -27,7 +27,7 @@ class TestURLInfoReceiver:
         headers_mock.__getitem__.side_effect = headers_to_return.__getitem__
         headers_mock.items.side_effect = headers_to_return.items
 
-        returned_headers_values = info_receiver._get_resource_necessary_headers_values(resource_headers)
+        returned_headers_values = info_receiver.get_necessary_resource_headers_values(resource_headers)
         assert returned_headers_values['content_length'] == 200
         assert returned_headers_values['accept_ranges'] == 'bytes'
 
@@ -44,10 +44,10 @@ class TestURLInfoReceiver:
         headers_mock.__getitem__.side_effect = headers_to_return.__getitem__
         headers_mock.items.side_effect = headers_to_return.items
         with pytest.raises(ApplicationException):
-            info_receiver._get_resource_necessary_headers_values(resource_headers)
+            info_receiver.get_necessary_resource_headers_values(resource_headers)
         resource_headers.pop('Content-Length')
         with pytest.raises(ApplicationException):
-            info_receiver._get_resource_necessary_headers_values(resource_headers)
+            info_receiver.get_necessary_resource_headers_values(resource_headers)
 
     @mock.patch('http_client.web_clients.url_info.URLInfoReceiver.response_validators')
     def test_all_validators_executed(self, validators_list, info_receiver):
@@ -57,12 +57,12 @@ class TestURLInfoReceiver:
             results_list.append('fake_validator is executed')
 
         validators_list.__iter__.side_effect = [fake_validator, fake_validator].__iter__
-        info_receiver._validate_response({}, 200)
+        info_receiver.validate_response({}, 200)
         assert len(results_list) == 2
 
     @pytest.mark.web
     @pytest.mark.asyncio
     async def test_url_headers_and_status_are_returned_values(self, info_receiver):
-        headers, status_code = await info_receiver._get_url_info('https://google.com')
+        headers, status_code = await info_receiver.make_request('https://google.com')
         assert isinstance(headers, CIMultiDictProxy)
         assert isinstance(status_code, int)

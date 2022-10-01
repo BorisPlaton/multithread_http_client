@@ -1,9 +1,7 @@
-from typing import NamedTuple
+from http_client.web_clients.structs import URLResourceData
 
 
-class Task(NamedTuple):
+class Task(URLResourceData):
     """The struct defines a task unit for workers."""
-    url_to_download: str
     byte_range_start: int
     byte_range_end: int
-    summary_length: int

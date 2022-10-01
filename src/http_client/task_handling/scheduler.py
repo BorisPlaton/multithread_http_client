@@ -1,15 +1,12 @@
-from http_client.data_structures.queues.task_queue import TaskQueue
+from http_client.task_handling.structs import Task
+from http_client.web_clients.structs import URLResourceData
 
 
 class TaskScheduler:
-    """Creates new tasks for workers and adds them to a task queue."""
+    """Creates new tasks for workers."""
 
-    async def get_url_data(self, url_to_validate):
+    def create_new_tasks(self, url_data: URLResourceData) -> list[Task]:
         pass
 
-    async def create_new_task_for_url(self, url: str):
-        url_data = await self.get_url_data(url)
-
-    def __init__(self, task_queue: TaskQueue):
-        """Saves a task queue to put new tasks in the future."""
-        self.task_queue = task_queue
+    def _get_bytes_ranges(self) -> list[tuple(int, int)]:
+        pass
