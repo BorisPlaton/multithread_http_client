@@ -1,7 +1,7 @@
 class HTTPClientSettings:
     """The settings of HTTP-client."""
     THREADS_AMOUNT = 4
-    BYTE_RANGE = 2000
+    BYTES_AMOUNT = 2000
 
 
 class WebsocketServerSettings:

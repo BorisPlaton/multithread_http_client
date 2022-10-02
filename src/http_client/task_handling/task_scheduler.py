@@ -1,7 +1,6 @@
 import math
 from typing import Iterator
 
-from exceptions.base import ApplicationException
 from http_client.task_handling.structs import Task
 from http_client.web_clients.structs import URLResourceData
 
@@ -30,22 +29,6 @@ class TaskScheduler:
             for i in range(math.ceil(content_total_length / self.bytes_amount))
         )
 
-    @property
-    def bytes_amount(self):
-        """Returns a bytes amount for downloading."""
-        return self._bytes_amount
-
-    @bytes_amount.setter
-    def bytes_amount(self, value: int):
-        """Validates that bytes amount is greater than 0 and is an integer type."""
-        if not isinstance(value, int):
-            raise ApplicationException("The bytes amount must be an `int` type")
-        elif value <= 0:
-            raise ApplicationException("The bytes amount can't be less than zero.")
-        self._bytes_amount = value
-
-    def __init__(self, bytes_amount: int = None):
+    def __init__(self, bytes_amount: int):
         """Saves a bytes amount that workers will use to download content."""
-        self._bytes_amount = None
-        if bytes_amount is not None:
-            self.bytes_amount = bytes_amount
+        self.bytes_amount = bytes_amount

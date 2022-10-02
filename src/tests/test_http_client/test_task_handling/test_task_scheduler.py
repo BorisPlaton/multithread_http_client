@@ -31,17 +31,6 @@ class TestTaskScheduler:
         total_content_length = content_length
         assert list(scheduler.generate_byte_ranges(total_content_length)) == byte_ranges
 
-    def test_scheduler_can_be_initialized_without_bytes_amount(self):
-        assert TaskScheduler()
-
-    @pytest.mark.parametrize(
-        'bytes_amount',
-        [False, 0, -500, -1, {False, True}, dict]
-    )
-    def test_scheduler_cant_be_initialized_with_wrong_bytes_amount_value(self, bytes_amount):
-        with pytest.raises(ApplicationException):
-            assert TaskScheduler(bytes_amount)
-
     def test_task_generation(self, scheduler, url_resource_data):
         generated_tasks = list(scheduler.generate_new_tasks(url_resource_data))
         assert list(generated_tasks)
