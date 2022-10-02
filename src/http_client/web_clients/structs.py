@@ -1,7 +1,8 @@
-from typing import NamedTuple
+from dataclasses import dataclass
 
 
-class URLResourceData(NamedTuple):
+@dataclass
+class URLResourceData:
     """Stores all necessary information about an url resource."""
     url: str
     summary_length: int
