@@ -2,6 +2,7 @@ class HTTPClientSettings:
     """The settings of HTTP-client."""
     THREADS_AMOUNT = 4
     BYTES_AMOUNT = 2000
+    CONTENT_DIRECTORY = 'downloaded_content'
 
 
 class WebsocketServerSettings:

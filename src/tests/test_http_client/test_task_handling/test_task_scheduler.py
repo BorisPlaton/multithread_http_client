@@ -1,6 +1,5 @@
 import pytest
 
-from exceptions.base import ApplicationException
 from http_client.task_handling.structs import Task
 from http_client.task_handling.task_scheduler import TaskScheduler
 from http_client.web_clients.structs import URLResourceData
