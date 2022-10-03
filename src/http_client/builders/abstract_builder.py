@@ -1,3 +1,6 @@
+from exceptions.client_exceptions import ValidationException
+
+
 class AbstractBuilder:
     """
     The abstract builder of the instance of specific class.
@@ -18,17 +21,25 @@ class AbstractBuilder:
         attributes have correct types and may call additional validations
         if they are defined.
         """
-        for attr_name, attr_type in self._get_instance_attrs_annotations():
+        for attr_name, attr_type in self._get_instance_attrs_annotations().items():
             attr_value = getattr(self, attr_name, None)
-            if not isinstance(attr_value, attr_type):
-                raise TypeError(
-                    f"`{self.__class__}.{attr_name}` equals `{attr_value}` which is not a `{attr_type}` type."
-                )
-            if (
-                    attr_name != 'instance_class' and
-                    (validate_property_method := getattr(self, 'validate_' + attr_name, None))
-            ):
-                validate_property_method(attr_value)
+            self._check_attr_type(attr_name, attr_type, attr_value)
+            self._call_additional_validation(attr_name, attr_type, attr_value)
+
+    def _check_attr_type(self, attr_name: str, attr_type: type, attr_value):
+        """Checks a given attribute is a correct type. Otherwise, raises an exception."""
+        if not isinstance(attr_value, attr_type):
+            raise ValidationException(
+                f"`{self.__class__.__name__}().{attr_name}` equals `{attr_value}` "
+                f"and is `{type(attr_value).__name__}` type"
+                f" which is not a defined `{attr_type}` type."
+            )
+
+    def _call_additional_validation(self, attr_name: str, attr_type: type, attr_value):
+        """Calls an additional validation method if it is defined in builder's class body."""
+        additional_validation_method = getattr(self, 'validate_' + attr_name, None)
+        if attr_name != 'instance_class' and additional_validation_method:
+            additional_validation_method(attr_value, attr_type)
 
     def _get_instance_attrs_values(self):
         """
@@ -45,5 +56,10 @@ class AbstractBuilder:
         return {
             attr_name: attr_type
             for attr_name, attr_type in self.__class__.__annotations__.items()
-            if attr_name != 'instance_class'
         }
+
+    def __setattr__(self, key, value):
+        """Checks if a correct attribute assignment is performed."""
+        if key not in self.__class__.__annotations__:
+            raise AttributeError(f"`{key}` is not a builder instance attribute.")
+        super().__setattr__(key, value)
