@@ -1,19 +1,16 @@
 from collections import deque
 
 
-class BaseQueue:
-    """
-    The base queue. Defines an interface to interact with it and
-    has base implementation.
-    """
+class TaskQueue:
+    """The task queue for background workers."""
 
     def push(self, element):
-        """Adds a new element to the queue."""
+        """Adds a new task to the queue."""
         return self.queue.append(element)
 
     def pop(self):
         """
-        Returns the most left element of the queue. If queue is
+        Returns the most left task of the queue. If queue is
         empty must return none.
         """
         return self.queue.popleft() if self.is_filled else None
