@@ -1,3 +1,4 @@
+from http_client.models.storages.task_queue import TaskQueue
 from http_client.url_consuming.url_listener import URLPipeListener
 from http_client.web_clients.url_info import URLInfoReceiver
 from settings import settings
@@ -19,6 +20,7 @@ class ComponentsConstructor:
         """Creates a Workers Handler instance."""
         builder = WorkersHandlerBuilder()
         builder.workers_amount = settings.THREADS_AMOUNT
+        builder.task_queue = TaskQueue()
         return builder.build()
 
     @classmethod

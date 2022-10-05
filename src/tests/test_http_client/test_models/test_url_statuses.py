@@ -1,7 +1,7 @@
 import pytest
 
 from http_client.models.storages.srtucts import (
-    BaseURLData, ProcessStatus, InProcessURLData,
+    BaseURLData, InProcessURLData,
     DownloadedURLData, DiscardedURL
 )
 from http_client.models.storages.url_statuses import URLStatusesStorage
@@ -17,7 +17,7 @@ class TestURLStatusesStorage:
 
     @pytest.fixture
     def base_url_data(self):
-        return BaseURLData('s', ProcessStatus.IN_PROCESS)
+        return BaseURLData('s')
 
     @pytest.mark.parametrize(
         'wrong_url', {
@@ -30,10 +30,10 @@ class TestURLStatusesStorage:
 
     @pytest.mark.parametrize(
         'correct_url', {
-            BaseURLData('s', ProcessStatus.IN_PROCESS),
-            DiscardedURL('s', ProcessStatus.IN_PROCESS, 'fail'),
-            DownloadedURLData('s', ProcessStatus.IN_PROCESS, '/'),
-            InProcessURLData('s', ProcessStatus.IN_PROCESS, 1, 2),
+            BaseURLData('s'),
+            DiscardedURL('s', 'fail'),
+            DownloadedURLData('s', '/'),
+            InProcessURLData('s', 1, 2),
         }
     )
     def test_only_base_url_data_type_can_be_added(self, storage, correct_url):

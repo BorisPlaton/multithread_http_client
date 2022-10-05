@@ -15,29 +15,28 @@ class ProcessStatus(Enum):
 class BaseURLData:
     """The base information about URL work. Is hashable."""
     url: str
-    process_status: ProcessStatus
 
 
 @dataclass(frozen=True)
 class DiscardedURL(BaseURLData):
     """The model of discarded URL."""
-    process_status = ProcessStatus.DISCARDED
     reason: str
+    process_status: ProcessStatus = ProcessStatus.DISCARDED
 
 
 @dataclass(frozen=True)
 class DownloadedURLData(BaseURLData):
     """The information about already downloaded data."""
-    process_status = ProcessStatus.DOWNLOADED
     path_to_file: str
+    process_status: ProcessStatus = ProcessStatus.DOWNLOADED
 
 
 @dataclass(frozen=True)
 class InProcessURLData(BaseURLData):
     """The information about a download work that is still in process."""
-    process_status = ProcessStatus.IN_PROCESS
     total_length: int
     downloaded: int
+    process_status: ProcessStatus = ProcessStatus.IN_PROCESS
 
     @property
     def progress(self) -> float:

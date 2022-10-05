@@ -1,5 +1,5 @@
 from collections import deque
-from threading import Lock
+from threading import RLock
 
 from http_client.core.utils import instance_thread_lock
 from http_client.task_handling.structs import Task
@@ -29,4 +29,4 @@ class TaskQueue:
 
     def __init__(self):
         self.queue = deque()
-        self.lock = Lock()
+        self.lock = RLock()

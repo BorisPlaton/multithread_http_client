@@ -2,6 +2,7 @@ from exceptions.client_exceptions import ValidationException
 from http_client.background_workers.workers_handler import WorkersHandler
 from http_client.builders.abstract_builder import AbstractBuilder
 from http_client.core.http_client_controller import HTTPClient
+from http_client.models.storages.task_queue import TaskQueue
 from http_client.task_handling.task_scheduler import TaskScheduler
 from http_client.url_consuming.url_listener import URLPipeListener
 from http_client.web_clients.url_info import URLInfoReceiver
@@ -25,6 +26,7 @@ class WorkersHandlerBuilder(AbstractBuilder):
 
     instance_class = WorkersHandler
     workers_amount: int
+    task_queue: TaskQueue
 
     @staticmethod
     def validate_workers_amount(value, value_type: type):

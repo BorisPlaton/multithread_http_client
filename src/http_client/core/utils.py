@@ -1,8 +1,9 @@
 from functools import wraps
 from threading import Lock
+from typing import Any
 
 
-def thread_lock(lock: Lock):
+def thread_lock(lock: Lock | Any):
     """Wraps called function with Lock to make it thread-safe."""
 
     def wrapper(func):

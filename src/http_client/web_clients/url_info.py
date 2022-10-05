@@ -4,6 +4,7 @@ from aiohttp import ClientSession
 from multidict import CIMultiDictProxy
 
 from exceptions.base import ApplicationException
+from http_client.web_clients.mixins import ResponseValidator
 from http_client.web_clients.response_validators import (
     status_code_validation, accept_ranges_validation,
     content_length_validation, content_encoding_validation
@@ -16,7 +17,7 @@ class HeaderData(NamedTuple):
     value_type: Any
 
 
-class URLInfoReceiver:
+class URLInfoReceiver(ResponseValidator):
     """Receives the data of a remote resource and validates it."""
 
     response_validators = [
@@ -47,14 +48,6 @@ class URLInfoReceiver:
         async with ClientSession() as session:
             async with session.head(url, headers=self.get_request_headers()) as response:
                 return response.headers, response.status
-
-    def validate_response(self, response_headers: dict | CIMultiDictProxy, response_status_code: int):
-        """
-        Validates a received response via already defined validators
-        in the class.
-        """
-        for validator in self.response_validators:
-            validator(response_status_code, response_headers)
 
     @staticmethod
     def get_request_headers() -> dict:

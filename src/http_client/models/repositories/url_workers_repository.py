@@ -1,4 +1,4 @@
-from threading import Lock
+from _thread import RLock
 
 from http_client.core.utils import thread_lock
 from http_client.models.storages.url_workers import URLWorkersStorage
@@ -8,7 +8,7 @@ class URLWorkersRepository:
     """The repository to access a DAO with URL workers statuses."""
 
     _storage = URLWorkersStorage
-    _lock = Lock()
+    _lock = RLock()
 
     @classmethod
     @thread_lock(_lock)
