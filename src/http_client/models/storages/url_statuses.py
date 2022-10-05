@@ -14,11 +14,13 @@ class URLStatusesStorage:
         cls.urls.add(url)
 
     @classmethod
-    def pop_url(cls, url: BaseURLData | str) -> BaseURLData:
+    def pop_url(cls, url: BaseURLData | str) -> BaseURLData | None:
         """
         Removes and returns URL data from storage. If it doesn't
         exist, returns None.
         """
+        if not isinstance(url, BaseURLData | str):
+            return
         return_value = None
         try:
             return_value = cls.get_url_data(url) if isinstance(url, str) else url

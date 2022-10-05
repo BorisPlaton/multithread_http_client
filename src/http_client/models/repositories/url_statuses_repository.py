@@ -1,3 +1,5 @@
+from threading import Lock
+
 from http_client.core.utils import thread_lock
 from http_client.models.storages.srtucts import (
     BaseURLData, ProcessStatus, DiscardedURL,
@@ -13,15 +15,16 @@ class URLStatusesRepository:
     """
 
     _storage = URLStatusesStorage
+    _lock = Lock()
 
     @classmethod
-    @thread_lock
+    @thread_lock(_lock)
     def add_url(cls, url):
         """Increases the workers quantity of URL."""
         return cls._storage.add_url(url)
 
     @classmethod
-    @thread_lock
+    @thread_lock(_lock)
     def pop_url(cls, url: BaseURLData | str):
         """
         Decreases the quantity of URL workers. If after decrease
@@ -30,7 +33,7 @@ class URLStatusesRepository:
         return cls._storage.pop_url(url)
 
     @classmethod
-    @thread_lock
+    @thread_lock(_lock)
     def get_url_data(cls, url: str) -> BaseURLData:
         """
         Returns URL data if it is in the storage. Otherwise,
@@ -39,13 +42,13 @@ class URLStatusesRepository:
         return cls._storage.get_url_data(url)
 
     @classmethod
-    @thread_lock
+    @thread_lock(_lock)
     def has_url(cls, url: str):
         """Returns if any URL data has the same URL path as given."""
         return cls._storage.has_url(url)
 
     @classmethod
-    @thread_lock
+    @thread_lock(_lock)
     def update_status(cls, url: BaseURLData | str, change_to: ProcessStatus, **kwargs):
         """
         Changes the status of URL data to a new one. If the URL
@@ -58,7 +61,7 @@ class URLStatusesRepository:
         return new_url_data
 
     @classmethod
-    @thread_lock
+    @thread_lock(_lock)
     def change_url_type(cls, url_data: BaseURLData, new_process_status: ProcessStatus, **kwargs):
         """
         Creates the new instance of URL data with the same URL but

@@ -2,7 +2,7 @@ import pytest
 
 from http_client.background_workers.workers_handler import WorkersHandler
 from http_client.builders.constructor import ComponentsConstructor
-from http_client.core.client_controller import HTTPClient
+from http_client.core.http_client_controller import HTTPClient
 from http_client.task_handling.task_scheduler import TaskScheduler
 
 

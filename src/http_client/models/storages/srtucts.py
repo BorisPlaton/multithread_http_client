@@ -11,28 +11,28 @@ class ProcessStatus(Enum):
     DOWNLOADED = 'Downloaded'
 
 
-@dataclass
+@dataclass(frozen=True)
 class BaseURLData:
-    """The base information about URL work."""
+    """The base information about URL work. Is hashable."""
     url: str
     process_status: ProcessStatus
 
 
-@dataclass
+@dataclass(frozen=True)
 class DiscardedURL(BaseURLData):
     """The model of discarded URL."""
     process_status = ProcessStatus.DISCARDED
     reason: str
 
 
-@dataclass
+@dataclass(frozen=True)
 class DownloadedURLData(BaseURLData):
     """The information about already downloaded data."""
     process_status = ProcessStatus.DOWNLOADED
     path_to_file: str
 
 
-@dataclass
+@dataclass(frozen=True)
 class InProcessURLData(BaseURLData):
     """The information about a download work that is still in process."""
     process_status = ProcessStatus.IN_PROCESS
