@@ -27,17 +27,3 @@ def content_length_validation(status_code: int, headers: dict):
         raise ValidationException(
             "The remote server doesn't have a content of the requested page."
         )
-
-
-def content_encoding_validation(status_code: int, headers: dict):
-    """Validates a response has a valid `Content-Encoding` header."""
-    available_accept_encodings = ['gzip', 'deflate']
-    if headers.get("Content-Encoding") is None:
-        raise ValidationException(
-            "The remote server didn't send the `Content-Encoding` header."
-        )
-    elif content_encoding := headers.get("Content-Encoding") not in available_accept_encodings:
-        raise ValidationException(
-            f"The remote server sends an unacceptable encoding `{content_encoding}` when only"
-            f" `{'`, `'.join(available_accept_encodings)}` are available."
-        )

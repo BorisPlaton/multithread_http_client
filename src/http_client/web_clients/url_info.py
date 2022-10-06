@@ -7,7 +7,7 @@ from exceptions.base import ApplicationException
 from http_client.web_clients.mixins import ResponseValidator
 from http_client.web_clients.response_validators import (
     status_code_validation, accept_ranges_validation,
-    content_length_validation, content_encoding_validation
+    content_length_validation
 )
 from http_client.web_clients.structs import URLResourceData
 
@@ -23,13 +23,11 @@ class URLInfoReceiver(ResponseValidator):
     response_validators = [
         status_code_validation,
         accept_ranges_validation,
-        content_encoding_validation,
         content_length_validation,
     ]
 
     headers_to_return = {
         'summary_length': HeaderData('Content-Length', int),
-        'encoding_type': HeaderData('Content-Encoding', str),
     }
 
     async def get_url_data_if_valid(self, url: str) -> URLResourceData:
@@ -38,26 +36,17 @@ class URLInfoReceiver(ResponseValidator):
         valid will return corresponding information about the URL
         resource.
         """
-        response_headers, response_status_code = await self.make_request(url)
+        response_headers, response_status_code = await self.send_request(url)
         self.validate_response(response_headers, response_status_code)
         resource_data = self.get_necessary_resource_headers_values(response_headers)
         return URLResourceData(**resource_data, url=url)
 
-    async def make_request(self, url: str) -> [CIMultiDictProxy, int]:
+    @staticmethod
+    async def send_request(url: str) -> [CIMultiDictProxy, int]:
         """Returns the headers and the status code of a request to URL."""
         async with ClientSession() as session:
-            async with session.head(url, headers=self.get_request_headers()) as response:
+            async with session.head(url) as response:
                 return response.headers, response.status
-
-    @staticmethod
-    def get_request_headers() -> dict:
-        """
-        Returns a dictionary with request headers. It is used to receive
-        information about a remote resource.
-        """
-        return {
-            'Accept-Encoding': 'gzip, deflate'
-        }
 
     @classmethod
     def get_necessary_resource_headers_values(cls, headers: dict | CIMultiDictProxy) -> dict:

@@ -3,7 +3,7 @@ from threading import Lock, Thread
 
 import pytest
 
-from http_client.core.utils import thread_lock, instance_thread_lock
+from http_client.core.wrappers import thread_lock, instance_thread_lock
 
 
 @pytest.mark.http_client

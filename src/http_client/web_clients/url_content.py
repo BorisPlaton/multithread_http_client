@@ -14,25 +14,26 @@ class URLContentDownloader(ResponseValidator):
     ]
 
     def get_url_content(
-            self, url: str, encoding: str, byte_range_start: int, byte_range_end: int
-    ) -> bytes | None:
+            self, url: str, byte_range_start: int, byte_range_end: int
+    ) -> bytes:
         """Downloads the content of URL if it passes all validations."""
         try:
-            response = self.send_request(url, encoding, byte_range_start, byte_range_end)
+            response = self.send_request(url, byte_range_start, byte_range_end)
             self.validate_response(response.headers, response.status_code)
             return response.content
-        except ValidationException:
+        except ValidationException as e:
+            raise ContentWasNotDownloaded(e.detail)
+        except Exception:
             raise ContentWasNotDownloaded
 
-    def send_request(self, url: str, encoding: str, byte_range_start: int, byte_range_end: int) -> Response:
+    def send_request(self, url: str, byte_range_start: int, byte_range_end: int) -> Response:
         """Sends a request and returns a response."""
-        request_headers = self.construct_request_headers(encoding, byte_range_start, byte_range_end)
+        request_headers = self.construct_request_headers(byte_range_start, byte_range_end)
         return requests.get(url, headers=request_headers)
 
     @staticmethod
     def construct_request_headers(encoding: str, byte_range_start, byte_range_end) -> dict:
         """Constructs headers for sending a request."""
         return {
-            'Accept-Encoding': encoding,
             'Range': f'bytes={byte_range_start}-{byte_range_end}',
         }

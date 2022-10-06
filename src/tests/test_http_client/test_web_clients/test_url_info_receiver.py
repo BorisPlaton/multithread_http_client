@@ -63,6 +63,6 @@ class TestURLInfoReceiver:
     @pytest.mark.web
     @pytest.mark.asyncio
     async def test_url_headers_and_status_are_returned_values(self, info_receiver):
-        headers, status_code = await info_receiver.make_request('https://google.com')
+        headers, status_code = await info_receiver.send_request('https://google.com')
         assert isinstance(headers, CIMultiDictProxy)
         assert isinstance(status_code, int)

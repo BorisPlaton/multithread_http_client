@@ -1,7 +1,7 @@
 from collections import deque
 from threading import RLock
 
-from http_client.core.utils import instance_thread_lock
+from http_client.core.wrappers import instance_thread_lock
 from http_client.task_handling.structs import Task
 
 

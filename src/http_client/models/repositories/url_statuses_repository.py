@@ -1,9 +1,9 @@
 from threading import RLock
 
-from http_client.core.utils import thread_lock
+from http_client.core.wrappers import thread_lock
 from http_client.models.storages.srtucts import (
     BaseURLData, DiscardedURL,
-    InProcessURLData
+    InProcessURLData, DownloadedURLData
 )
 from http_client.models.storages.url_statuses import URLStatusesStorage
 
@@ -61,7 +61,19 @@ class URLStatusesRepository:
 
     @classmethod
     @thread_lock(_lock)
-    def add_discarded_url(cls, url: str, reason: str):
+    def is_discarded(cls, url: str) -> bool:
+        """Returns if any URL data has the same URL path as given."""
+        return isinstance(cls.get_url(url), DiscardedURL)
+
+    @classmethod
+    @thread_lock(_lock)
+    def is_downloaded(cls, url: str) -> bool:
+        """Returns if any URL data has the same URL path as given."""
+        return isinstance(cls.get_url(url), DownloadedURLData)
+
+    @classmethod
+    @thread_lock(_lock)
+    def add_url_to_discarded(cls, url: str, reason: str):
         """Sets URL is discarded."""
         cls.pop_url(url)
         return cls.add_url(DiscardedURL(url, reason))
@@ -73,4 +85,4 @@ class URLStatusesRepository:
         url_data = cls.get_url(url)
         if not (url_data and isinstance(url_data, InProcessURLData)):
             return False
-        return cls.update_url_data(url_data.url, downloaded=url_data.downloaded + new_content_size)
+        return cls.update_url_data(url_data.url, downloaded=url_data.downloaded_content_length + new_content_size)

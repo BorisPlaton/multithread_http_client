@@ -14,7 +14,7 @@ class TestTaskScheduler:
 
     @pytest.fixture
     def url_resource_data(self):
-        return URLResourceData('/', 1000, 'gzip')
+        return URLResourceData('/', 1000)
 
     @pytest.mark.parametrize(
         'bytes_amount, content_length, byte_ranges',
