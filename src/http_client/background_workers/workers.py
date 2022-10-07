@@ -4,6 +4,7 @@ from exceptions.client_exceptions import ContentWasNotDownloaded
 from http_client.core.wrappers import instance_thread_lock
 from http_client.models.repositories.url_statuses_repository import URLStatusesRepository
 from http_client.models.repositories.url_workers_repository import URLWorkersRepository
+from http_client.models.storages.srtucts import DownloadedContent
 from http_client.models.storages.task_queue import TaskQueue
 from http_client.task_handling.structs import Task
 from http_client.web_clients.url_content import URLContentDownloader
@@ -26,8 +27,8 @@ class TaskWorker:
 
     def listen_queue(self):
         """
-        Starts worker to listen a task queue. When a new task
-        is got starts processing it.
+        Starts the worker to listen a task queue. When
+        a new task is got, starts to process it.
         """
         while self.is_working:
             new_task = self.task_queue.pop()
@@ -42,7 +43,9 @@ class TaskWorker:
         URLWorkersRepository.increase_workers(task.url)
         try:
             content = self.download_url_content(task)
-            URLStatusesRepository.increase_downloaded_amount(task.url, task.content_size)
+            URLStatusesRepository.add_downloaded_content(
+                task.url, DownloadedContent(content, task.byte_range_start)
+            )
         except ContentWasNotDownloaded as e:
             URLStatusesRepository.add_url_to_discarded(task.url, e.detail)
         finally:
@@ -65,6 +68,10 @@ class TaskWorker:
     @is_working.setter
     @instance_thread_lock('_lock')
     def is_working(self, value: bool):
+        """
+        Sets if the worker is executing his job. A value must be a
+        boolean type.
+        """
         if not isinstance(value, bool):
             raise ValueError(
                 "To set if the worker is working you must pass a boolean argument."

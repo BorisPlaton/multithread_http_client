@@ -1,4 +1,4 @@
-from http_client.models.storages.srtucts import BaseURLData, DownloadedURLData, DiscardedURL, InProcessURLData
+from http_client.models.storages.srtucts import DownloadedURLData, DiscardedURL, InProcessURLData
 
 
 EXISTING_URL_TYPES = InProcessURLData | DiscardedURL | DownloadedURLData
@@ -19,10 +19,10 @@ class URLStatusesStorage:
     @classmethod
     def pop_url(cls, url: EXISTING_URL_TYPES | str) -> EXISTING_URL_TYPES | None:
         """
-        Removes and returns URL data from storage. If it doesn't
+        Removes and returns URL data from the storage. If it doesn't
         exist, returns None.
         """
-        if not isinstance(url, BaseURLData | str):
+        if not isinstance(url, EXISTING_URL_TYPES | str):
             return
         return_value = None
         try:

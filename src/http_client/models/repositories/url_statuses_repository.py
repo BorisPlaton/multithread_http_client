@@ -2,7 +2,7 @@ from threading import RLock
 
 from http_client.core.wrappers import thread_lock
 from http_client.models.storages.srtucts import (
-    DiscardedURL, InProcessURLData, DownloadedURLData
+    DiscardedURL, InProcessURLData, DownloadedURLData, DownloadedContent
 )
 from http_client.models.storages.url_statuses import URLStatusesStorage, EXISTING_URL_TYPES
 
@@ -92,10 +92,7 @@ class URLStatusesRepository:
 
     @classmethod
     @thread_lock(_lock)
-    def increase_downloaded_amount(cls, url: str, new_content_size: int):
+    def add_downloaded_content(cls, url: str, downloaded_content: DownloadedContent):
         """Increases a downloaded content amount for the given URL data."""
-        if not cls.is_in_process(url):
-            return False
-        return cls.update_url_data(
-            url, downloaded=cls.get_url(url).downloaded_content_length + new_content_size
-        )
+        if cls.is_in_process(url):
+            cls.get_url(url).add_downloaded_fragment(downloaded_content)

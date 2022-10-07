@@ -14,11 +14,16 @@ class ProcessStatus(Enum):
 
 @dataclass
 class DownloadedContent:
+    """Defines the part of the downloaded content of URL."""
     content: bytes
     byte_range_start: int
 
     @cached_property
     def size(self):
+        """
+        Returns the size of `content`. After first evaluating
+        will be cached.
+        """
         return len(self.content)
 
 
@@ -56,7 +61,7 @@ class InProcessURLData(BaseURLData):
 
     @property
     def progress(self) -> float:
-        """Returns the progress of content downloading."""
+        """Returns the progress of content downloading in percents."""
         return round(self.downloaded_content_length / self.total_length, 4) * 100
 
     @property
@@ -64,5 +69,6 @@ class InProcessURLData(BaseURLData):
         """Returns workers quantity that are processing current URL."""
         return URLWorkersRepository.get_workers_amount(self.url)
 
-    def __add__(self, downloaded_content: DownloadedContent):
+    def add_downloaded_fragment(self, downloaded_content: DownloadedContent):
+        """Adds a downloaded content to already existed content fragments."""
         self.downloaded_fragments.append(downloaded_content)
