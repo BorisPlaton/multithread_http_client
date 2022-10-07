@@ -30,19 +30,20 @@ class URLInfoReceiver(ResponseValidator):
         'summary_length': HeaderData('Content-Length', int),
     }
 
-    async def get_url_data_if_valid(self, url: str) -> URLResourceData:
+    @classmethod
+    async def get_url_data_if_valid(cls, url: str) -> URLResourceData:
         """
         Receives only the headers of request to URL and if they are
         valid will return corresponding information about the URL
         resource.
         """
-        response_headers, response_status_code = await self.send_request(url)
-        self.validate_response(response_headers, response_status_code)
-        resource_data = self.get_necessary_resource_headers_values(response_headers)
+        response_headers, response_status_code = await cls.send_request(url)
+        cls.validate_response(response_headers, response_status_code)
+        resource_data = cls.get_necessary_resource_headers_values(response_headers)
         return URLResourceData(**resource_data, url=url)
 
-    @staticmethod
-    async def send_request(url: str) -> [CIMultiDictProxy, int]:
+    @classmethod
+    async def send_request(cls, url: str) -> [CIMultiDictProxy, int]:
         """Returns the headers and the status code of a request to URL."""
         async with ClientSession() as session:
             async with session.head(url) as response:

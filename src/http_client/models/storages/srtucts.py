@@ -1,6 +1,6 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
-from typing import NamedTuple
+from functools import cached_property
 
 from http_client.models.repositories.url_workers_repository import URLWorkersRepository
 
@@ -12,9 +12,12 @@ class ProcessStatus(Enum):
     DOWNLOADED = 'Downloaded'
 
 
-class DownloadedContent(NamedTuple):
+@dataclass
+class DownloadedContent:
     content: bytes
+    byte_range_start: int
 
+    @cached_property
     def size(self):
         return len(self.content)
 
@@ -43,7 +46,7 @@ class DownloadedURLData(BaseURLData):
 class InProcessURLData(BaseURLData):
     """The information about a download work that is still in process."""
     total_length: int
-    downloaded_fragments: list[DownloadedContent]
+    downloaded_fragments: list[DownloadedContent] = field(default_factory=list)
     process_status: ProcessStatus = ProcessStatus.IN_PROCESS
 
     @property

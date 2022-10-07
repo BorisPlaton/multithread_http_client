@@ -10,10 +10,11 @@ class ResponseValidator:
 
     response_validators = []
 
-    def validate_response(self, response_headers: LikeDict, response_status_code: int):
+    @classmethod
+    def validate_response(cls, response_headers: LikeDict, response_status_code: int):
         """
         Validates a received response via already defined validators
         in the class.
         """
-        for validator in self.response_validators:
+        for validator in cls.response_validators:
             validator(response_status_code, response_headers)

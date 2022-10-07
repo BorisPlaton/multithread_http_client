@@ -2,10 +2,9 @@ from threading import RLock
 
 from http_client.core.wrappers import thread_lock
 from http_client.models.storages.srtucts import (
-    BaseURLData, DiscardedURL,
-    InProcessURLData, DownloadedURLData
+    DiscardedURL, InProcessURLData, DownloadedURLData
 )
-from http_client.models.storages.url_statuses import URLStatusesStorage
+from http_client.models.storages.url_statuses import URLStatusesStorage, EXISTING_URL_TYPES
 
 
 class URLStatusesRepository:
@@ -19,7 +18,7 @@ class URLStatusesRepository:
 
     @classmethod
     @thread_lock(_lock)
-    def add_url(cls, url: BaseURLData):
+    def add_url(cls, url: EXISTING_URL_TYPES):
         """Adds new URL data to the storage."""
         return cls._storage.add_url(url)
 
@@ -46,7 +45,7 @@ class URLStatusesRepository:
 
     @classmethod
     @thread_lock(_lock)
-    def get_url(cls, url: str) -> BaseURLData:
+    def get_url(cls, url: str) -> EXISTING_URL_TYPES:
         """
         Returns URL data if it is in the storage. Otherwise,
         returns None.
@@ -73,6 +72,12 @@ class URLStatusesRepository:
 
     @classmethod
     @thread_lock(_lock)
+    def is_in_process(cls, url: str) -> bool:
+        """Returns if any URL data has the same URL path as given."""
+        return isinstance(cls.get_url(url), InProcessURLData)
+
+    @classmethod
+    @thread_lock(_lock)
     def add_url_to_discarded(cls, url: str, reason: str):
         """Sets URL is discarded."""
         cls.pop_url(url)
@@ -80,9 +85,17 @@ class URLStatusesRepository:
 
     @classmethod
     @thread_lock(_lock)
+    def add_url_to_in_process(cls, url: str, total_length: int):
+        """Adds a URL as in process to the storage."""
+        cls.pop_url(url)
+        return cls.add_url(InProcessURLData(url, total_length))
+
+    @classmethod
+    @thread_lock(_lock)
     def increase_downloaded_amount(cls, url: str, new_content_size: int):
         """Increases a downloaded content amount for the given URL data."""
-        url_data = cls.get_url(url)
-        if not (url_data and isinstance(url_data, InProcessURLData)):
+        if not cls.is_in_process(url):
             return False
-        return cls.update_url_data(url_data.url, downloaded=url_data.downloaded_content_length + new_content_size)
+        return cls.update_url_data(
+            url, downloaded=cls.get_url(url).downloaded_content_length + new_content_size
+        )

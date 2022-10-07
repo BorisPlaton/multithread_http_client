@@ -1,20 +1,23 @@
-from http_client.models.storages.srtucts import BaseURLData
+from http_client.models.storages.srtucts import BaseURLData, DownloadedURLData, DiscardedURL, InProcessURLData
+
+
+EXISTING_URL_TYPES = InProcessURLData | DiscardedURL | DownloadedURLData
 
 
 class URLStatusesStorage:
     """The storage of different URLs types."""
 
-    urls: set[BaseURLData] = set()
+    urls: set[EXISTING_URL_TYPES] = set()
 
     @classmethod
-    def add_url(cls, url: BaseURLData):
+    def add_url(cls, url: EXISTING_URL_TYPES):
         """Adds a new URL to storage."""
-        if not isinstance(url, BaseURLData):
+        if not isinstance(url, EXISTING_URL_TYPES):
             raise ValueError("URL data must be a `BaseURLData` type.")
         cls.urls.add(url)
 
     @classmethod
-    def pop_url(cls, url: BaseURLData | str) -> BaseURLData | None:
+    def pop_url(cls, url: EXISTING_URL_TYPES | str) -> EXISTING_URL_TYPES | None:
         """
         Removes and returns URL data from storage. If it doesn't
         exist, returns None.
@@ -30,7 +33,7 @@ class URLStatusesStorage:
         return return_value
 
     @classmethod
-    def get_url_data(cls, url: str) -> BaseURLData:
+    def get_url_data(cls, url: str) -> EXISTING_URL_TYPES:
         """
         Returns URL data if it is in the storage. Otherwise,
         returns None.
@@ -41,7 +44,7 @@ class URLStatusesStorage:
             pass
 
     @classmethod
-    def has_url(cls, url: str):
+    def has_url(cls, url: str) -> bool:
         """Returns if any URL data has the same URL path as given."""
         return url in [url_data.url for url_data in cls.urls]
 

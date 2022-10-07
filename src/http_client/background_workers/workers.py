@@ -1,4 +1,7 @@
+from threading import Thread, Event, RLock
+
 from exceptions.client_exceptions import ContentWasNotDownloaded
+from http_client.core.wrappers import instance_thread_lock
 from http_client.models.repositories.url_statuses_repository import URLStatusesRepository
 from http_client.models.repositories.url_workers_repository import URLWorkersRepository
 from http_client.models.storages.task_queue import TaskQueue
@@ -13,11 +16,20 @@ class TaskWorker:
     """
 
     def start(self):
+        """Starts a worker's activity."""
+        self.is_working = True
+        Thread(target=self.listen_queue).start()
+
+    def stop(self):
+        """Stops the worker."""
+        self.is_working = False
+
+    def listen_queue(self):
         """
         Starts worker to listen a task queue. When a new task
         is got starts processing it.
         """
-        while True:
+        while self.is_working:
             new_task = self.task_queue.pop()
             if new_task:
                 self.process_task(new_task)
@@ -36,16 +48,31 @@ class TaskWorker:
         finally:
             URLWorkersRepository.decrease_workers(task.url)
 
-    def decode_downloaded_content(self, content: bytes) -> bytes:
-        pass
-
-    def download_url_content(self, task: Task) -> bytes:
+    @staticmethod
+    def download_url_content(task: Task) -> bytes:
         """Performs the downloading operation of URL content."""
-        content = self.url_content_downloader.get_url_content(
+        content = URLContentDownloader.get_url_content(
             task.url, task.byte_range_start, task.byte_range_end
         )
         return content
 
+    @property
+    @instance_thread_lock('_lock')
+    def is_working(self):
+        """Returns if the worker is working."""
+        return self._is_working.is_set() or False
+
+    @is_working.setter
+    @instance_thread_lock('_lock')
+    def is_working(self, value: bool):
+        if not isinstance(value, bool):
+            raise ValueError(
+                "To set if the worker is working you must pass a boolean argument."
+            )
+        self._is_working.set() if value else self._is_working.clear()
+
     def __init__(self, task_queue: TaskQueue):
+        """Saves a task queue which will be listened to."""
         self.task_queue = task_queue
-        self.url_content_downloader = URLContentDownloader()
+        self._is_working = Event()
+        self._lock = RLock()

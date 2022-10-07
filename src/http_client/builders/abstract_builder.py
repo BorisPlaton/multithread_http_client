@@ -1,3 +1,5 @@
+from typing import get_origin
+
 from exceptions.client_exceptions import ValidationException
 
 
@@ -9,6 +11,20 @@ class AbstractBuilder:
     """
 
     instance_class: type = None
+
+    @classmethod
+    def construct(cls):
+        """
+        Creates the instance of defined class. You must set
+        corresponding attributes in the `configure_instance` method
+        if it is needed.
+        """
+        builder = cls()
+        builder.configure_instance()
+        return builder.build()
+
+    def configure_instance(self):
+        """Override it if an instance must have defined attributes."""
 
     def build(self):
         """Builds the instance of `instance_class` type."""
@@ -24,22 +40,25 @@ class AbstractBuilder:
         for attr_name, attr_type in self._get_instance_attrs_annotations().items():
             attr_value = getattr(self, attr_name, None)
             self._check_attr_type(attr_name, attr_type, attr_value)
-            self._call_additional_validation(attr_name, attr_type, attr_value)
+            self._call_additional_validation(attr_name, attr_value)
 
     def _check_attr_type(self, attr_name: str, attr_type: type, attr_value):
         """Checks a given attribute is a correct type. Otherwise, raises an exception."""
-        if not isinstance(attr_value, attr_type):
-            raise ValidationException(
-                f"`{self.__class__.__name__}().{attr_name}` equals `{attr_value}` "
-                f"and is `{type(attr_value).__name__}` type"
-                f" which is not a defined `{attr_type}` type."
-            )
+        try:
+            if not isinstance(attr_value, get_origin(attr_type)):
+                raise ValidationException(
+                    f"`{self.__class__.__name__}().{attr_name}` equals `{attr_value}` "
+                    f"and is `{type(attr_value).__name__}` type"
+                    f" which is not a defined `{attr_type}` type."
+                )
+        except TypeError:
+            pass
 
-    def _call_additional_validation(self, attr_name: str, attr_type: type, attr_value):
+    def _call_additional_validation(self, attr_name: str, attr_value):
         """Calls an additional validation method if it is defined in builder's class body."""
         additional_validation_method = getattr(self, 'validate_' + attr_name, None)
         if attr_name != 'instance_class' and additional_validation_method:
-            additional_validation_method(attr_value, attr_type)
+            additional_validation_method(attr_value)
 
     def _get_instance_attrs_values(self):
         """
