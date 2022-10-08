@@ -1,8 +1,7 @@
 import pytest
 
-from http_client.task_handling.structs import Task
-from http_client.task_handling.task_scheduler import TaskScheduler
-from http_client.web_clients.structs import URLResourceData
+from http_client.background_workers.task_scheduler import TaskScheduler, Task
+from http_client.utils.web_clients.url_info import URLResourceData
 
 
 @pytest.mark.http_client
@@ -31,7 +30,7 @@ class TestTaskScheduler:
         assert list(scheduler.generate_byte_ranges(total_content_length)) == byte_ranges
 
     def test_task_generation(self, scheduler, url_resource_data):
-        generated_tasks = list(scheduler.generate_new_tasks(url_resource_data))
+        generated_tasks = list(scheduler.generate_new_tasks(url_resource_data.url, url_resource_data.summary_length))
         assert list(generated_tasks)
         for task in generated_tasks:
             assert isinstance(task, Task)

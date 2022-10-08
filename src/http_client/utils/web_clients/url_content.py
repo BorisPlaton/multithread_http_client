@@ -2,8 +2,8 @@ import requests
 from requests import Response
 
 from exceptions.client_exceptions import ValidationException, ContentWasNotDownloaded
-from http_client.web_clients.mixins import ResponseValidator
-from http_client.web_clients.response_validators import status_code_validation
+from http_client.utils.web_clients.mixins import ResponseValidator
+from http_client.utils.web_clients.response_validators import status_code_validation
 
 
 class URLContentDownloader(ResponseValidator):

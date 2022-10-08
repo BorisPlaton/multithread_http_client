@@ -4,7 +4,7 @@ import pytest
 from multidict import CIMultiDictProxy
 
 from exceptions.base import ApplicationException
-from http_client.web_clients.url_info import URLInfoReceiver, HeaderData
+from http_client.utils.web_clients.url_info import URLInfoReceiver, HeaderData
 
 
 @pytest.mark.http_client
@@ -14,7 +14,7 @@ class TestURLInfoReceiver:
     def info_receiver(self):
         return URLInfoReceiver()
 
-    @mock.patch('http_client.web_clients.url_info.URLInfoReceiver.headers_to_return')
+    @mock.patch('http_client.utils.web_clients.url_info.URLInfoReceiver.headers_to_return')
     def test_all_necessary_resource_headers_values_returned(self, headers_mock, info_receiver):
         headers_to_return = {
             'content_length': HeaderData('Content-Length', int),
@@ -31,7 +31,7 @@ class TestURLInfoReceiver:
         assert returned_headers_values['content_length'] == 200
         assert returned_headers_values['accept_ranges'] == 'bytes'
 
-    @mock.patch('http_client.web_clients.url_info.URLInfoReceiver.headers_to_return')
+    @mock.patch('http_client.utils.web_clients.url_info.URLInfoReceiver.headers_to_return')
     def test_exception_raised_if_cannot_construct_headers_values(self, headers_mock, info_receiver):
         headers_to_return = {
             'content_length': HeaderData('Content-Length', int),
@@ -49,7 +49,7 @@ class TestURLInfoReceiver:
         with pytest.raises(ApplicationException):
             info_receiver.get_necessary_resource_headers_values(resource_headers)
 
-    @mock.patch('http_client.web_clients.url_info.URLInfoReceiver.response_validators')
+    @mock.patch('http_client.utils.web_clients.url_info.URLInfoReceiver.response_validators')
     def test_all_validators_executed(self, validators_list, info_receiver):
         results_list = []
 

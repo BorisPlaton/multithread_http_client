@@ -1,7 +1,7 @@
 import pytest
 
 from exceptions.client_exceptions import ValidationException
-from http_client.builders.abstract_builder import AbstractBuilder
+from http_client.utils.builders.abstract_builder import AbstractBuilder
 
 
 @pytest.mark.http_client
@@ -90,7 +90,7 @@ class TestAbstractBuilder:
             one: int
             two: str
 
-            def validate_two(self, value, value_type):
+            def validate_two(self, value):
                 if value != '2':
                     raise ValidationException
 

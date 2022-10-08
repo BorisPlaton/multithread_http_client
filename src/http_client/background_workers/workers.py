@@ -1,13 +1,13 @@
 from threading import Thread, Event, RLock
 
 from exceptions.client_exceptions import ContentWasNotDownloaded
-from http_client.core.wrappers import instance_thread_lock
+from http_client.background_workers.task_scheduler import Task
+from http_client.utils.web_clients.url_content import URLContentDownloader
+from http_client.utils.wrappers import instance_thread_lock
 from http_client.models.repositories.url_statuses_repository import URLStatusesRepository
 from http_client.models.repositories.url_workers_repository import URLWorkersRepository
-from http_client.models.storages.srtucts import DownloadedContent
+from http_client.models.storages.structs import DownloadedContent
 from http_client.models.storages.task_queue import TaskQueue
-from http_client.task_handling.structs import Task
-from http_client.web_clients.url_content import URLContentDownloader
 
 
 class TaskWorker:

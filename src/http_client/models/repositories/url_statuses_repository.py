@@ -1,7 +1,7 @@
 from threading import RLock
 
-from http_client.core.wrappers import thread_lock
-from http_client.models.storages.srtucts import (
+from http_client.utils.wrappers import thread_lock
+from http_client.models.storages.structs import (
     DiscardedURL, InProcessURLData, DownloadedURLData, DownloadedContent
 )
 from http_client.models.storages.url_statuses import URLStatusesStorage, EXISTING_URL_TYPES
@@ -18,9 +18,31 @@ class URLStatusesRepository:
 
     @classmethod
     @thread_lock(_lock)
-    def add_url(cls, url: EXISTING_URL_TYPES):
-        """Adds new URL data to the storage."""
-        return cls._storage.add_url(url)
+    def add_url(cls, url_data: EXISTING_URL_TYPES):
+        """
+        Adds new URL data to the storage and pops old if it is
+        existed.
+        """
+        cls._storage.pop_url(url_data.url)
+        return cls._storage.add_url(url_data)
+
+    @classmethod
+    @thread_lock(_lock)
+    def add_url_to_discarded(cls, url: str, reason: str):
+        """Sets URL is discarded."""
+        return cls.add_url(DiscardedURL(url, reason))
+
+    @classmethod
+    @thread_lock(_lock)
+    def add_url_to_in_process(cls, url: str, summary_size: int):
+        """Adds a URL as in process to the storage."""
+        return cls.add_url(InProcessURLData(url, summary_size))
+
+    @classmethod
+    @thread_lock(_lock)
+    def add_url_to_downloaded(cls, url: str, path_to_file: str):
+        """Adds a URL as in process to the storage."""
+        return cls.add_url(DownloadedURLData(url, path_to_file))
 
     @classmethod
     @thread_lock(_lock)
@@ -78,21 +100,13 @@ class URLStatusesRepository:
 
     @classmethod
     @thread_lock(_lock)
-    def add_url_to_discarded(cls, url: str, reason: str):
-        """Sets URL is discarded."""
-        cls.pop_url(url)
-        return cls.add_url(DiscardedURL(url, reason))
-
-    @classmethod
-    @thread_lock(_lock)
-    def add_url_to_in_process(cls, url: str, total_length: int):
-        """Adds a URL as in process to the storage."""
-        cls.pop_url(url)
-        return cls.add_url(InProcessURLData(url, total_length))
-
-    @classmethod
-    @thread_lock(_lock)
     def add_downloaded_content(cls, url: str, downloaded_content: DownloadedContent):
         """Increases a downloaded content amount for the given URL data."""
         if cls.is_in_process(url):
             cls.get_url(url).add_downloaded_fragment(downloaded_content)
+
+    @classmethod
+    @thread_lock(_lock)
+    def restore(cls):
+        """Deletes all records in the storage."""
+        cls._storage.delete_all()

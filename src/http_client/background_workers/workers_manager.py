@@ -2,9 +2,8 @@ from exceptions.client_exceptions import URLCantBeProcessed, ValidationException
 from http_client.background_workers.workers import TaskWorker
 from http_client.models.repositories.url_statuses_repository import URLStatusesRepository
 from http_client.models.storages.task_queue import TaskQueue
-from http_client.task_handling.task_scheduler import TaskScheduler
-from http_client.web_clients.structs import URLResourceData
-from http_client.web_clients.url_info import URLInfoReceiver
+from http_client.background_workers.task_scheduler import TaskScheduler
+from http_client.utils.web_clients.url_info import URLInfoReceiver, URLResourceData
 
 
 class WorkersManager:
@@ -38,7 +37,7 @@ class WorkersManager:
         workers.
         """
         URLStatusesRepository.add_url_to_in_process(url_content_data.url, url_content_data.summary_length)
-        for task in self.task_scheduler.generate_new_tasks(url_content_data):
+        for task in self.task_scheduler.generate_new_tasks(url_content_data.url, url_content_data.summary_length):
             self.task_queue.push(task)
 
     @staticmethod

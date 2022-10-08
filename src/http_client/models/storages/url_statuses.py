@@ -1,4 +1,4 @@
-from http_client.models.storages.srtucts import DownloadedURLData, DiscardedURL, InProcessURLData
+from http_client.models.storages.structs import DownloadedURLData, DiscardedURL, InProcessURLData
 
 
 EXISTING_URL_TYPES = InProcessURLData | DiscardedURL | DownloadedURLData
@@ -13,17 +13,17 @@ class URLStatusesStorage:
     def add_url(cls, url: EXISTING_URL_TYPES):
         """Adds a new URL to storage."""
         if not isinstance(url, EXISTING_URL_TYPES):
-            raise ValueError("URL data must be a `BaseURLData` type.")
+            raise ValueError(f"URL data can't be a `{type(url)}` type.")
         cls.urls.add(url)
 
     @classmethod
-    def pop_url(cls, url: EXISTING_URL_TYPES | str) -> EXISTING_URL_TYPES | None:
+    def pop_url(cls, url: str) -> EXISTING_URL_TYPES | None:
         """
         Removes and returns URL data from the storage. If it doesn't
         exist, returns None.
         """
-        if not isinstance(url, EXISTING_URL_TYPES | str):
-            return
+        if not isinstance(url, str):
+            raise ValueError(f"The URL to pop must be `str` not `{type(url)}` type.")
         return_value = None
         try:
             return_value = cls.get_url_data(url) if isinstance(url, str) else url

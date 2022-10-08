@@ -1,20 +1,27 @@
+from dataclasses import dataclass
 from typing import NamedTuple, Any
 
 from aiohttp import ClientSession
 from multidict import CIMultiDictProxy
 
 from exceptions.base import ApplicationException
-from http_client.web_clients.mixins import ResponseValidator
-from http_client.web_clients.response_validators import (
+from http_client.utils.web_clients.mixins import ResponseValidator
+from http_client.utils.web_clients.response_validators import (
     status_code_validation, accept_ranges_validation,
     content_length_validation
 )
-from http_client.web_clients.structs import URLResourceData
 
 
 class HeaderData(NamedTuple):
     header_name: str
     value_type: Any
+
+
+@dataclass(frozen=True)
+class URLResourceData:
+    """Stores all necessary information about an url resource."""
+    url: str
+    summary_length: int
 
 
 class URLInfoReceiver(ResponseValidator):

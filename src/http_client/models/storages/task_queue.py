@@ -1,8 +1,8 @@
 from collections import deque
 from threading import RLock
 
-from http_client.core.wrappers import instance_thread_lock
-from http_client.task_handling.structs import Task
+from http_client.utils.wrappers import instance_thread_lock
+from http_client.background_workers.structs import Task
 
 
 class TaskQueue:

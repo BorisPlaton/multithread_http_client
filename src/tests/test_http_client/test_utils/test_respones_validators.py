@@ -1,7 +1,7 @@
 import pytest
 
 from exceptions.client_exceptions import ValidationException
-from http_client.web_clients.response_validators import status_code_validation, accept_ranges_validation, \
+from http_client.utils.web_clients.response_validators import status_code_validation, accept_ranges_validation, \
     content_length_validation
 
 

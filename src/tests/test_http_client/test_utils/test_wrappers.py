@@ -3,11 +3,11 @@ from threading import Lock, Thread
 
 import pytest
 
-from http_client.core.wrappers import thread_lock, instance_thread_lock
+from http_client.utils.wrappers import thread_lock, instance_thread_lock
 
 
 @pytest.mark.http_client
-class TestCoreUtils:
+class TestUtilsWrappers:
 
     def test_thread_lock_locks_funcs(self):
         lock = Lock()

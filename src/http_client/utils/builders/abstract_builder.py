@@ -1,5 +1,3 @@
-from typing import get_origin
-
 from exceptions.client_exceptions import ValidationException
 
 
@@ -45,7 +43,7 @@ class AbstractBuilder:
     def _check_attr_type(self, attr_name: str, attr_type: type, attr_value):
         """Checks a given attribute is a correct type. Otherwise, raises an exception."""
         try:
-            if not isinstance(attr_value, get_origin(attr_type)):
+            if not isinstance(attr_value, attr_type):
                 raise ValidationException(
                     f"`{self.__class__.__name__}().{attr_name}` equals `{attr_value}` "
                     f"and is `{type(attr_value).__name__}` type"

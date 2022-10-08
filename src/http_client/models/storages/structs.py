@@ -50,19 +50,19 @@ class DownloadedURLData(BaseURLData):
 @dataclass(frozen=True)
 class InProcessURLData(BaseURLData):
     """The information about a download work that is still in process."""
-    total_length: int
-    downloaded_fragments: list[DownloadedContent] = field(default_factory=list)
+    summary_size: int
+    downloaded_fragments: list[DownloadedContent] = field(default_factory=list, compare=False, hash=False)
     process_status: ProcessStatus = ProcessStatus.IN_PROCESS
 
     @property
-    def downloaded_content_length(self) -> int:
+    def downloaded_content_size(self) -> int:
         """Returns the total amount of all downloaded fragments."""
         return sum([fragment.size for fragment in self.downloaded_fragments])
 
     @property
     def progress(self) -> float:
         """Returns the progress of content downloading in percents."""
-        return round(self.downloaded_content_length / self.total_length, 4) * 100
+        return round(self.downloaded_content_size / self.summary_size, 4) * 100
 
     @property
     def workers_amount(self) -> int:
@@ -71,4 +71,9 @@ class InProcessURLData(BaseURLData):
 
     def add_downloaded_fragment(self, downloaded_content: DownloadedContent):
         """Adds a downloaded content to already existed content fragments."""
+        if not isinstance(downloaded_content, DownloadedContent):
+            raise ValueError(
+                "Only a `DownloadedContent` type can be used to add downloaded "
+                "fragments, not a `{type(downloaded_content)}`."
+            )
         self.downloaded_fragments.append(downloaded_content)

@@ -1,10 +1,10 @@
 from exceptions.client_exceptions import ValidationException
 from http_client.background_workers.workers import TaskWorker
 from http_client.background_workers.workers_manager import WorkersManager
-from http_client.builders.abstract_builder import AbstractBuilder
+from http_client.utils.builders.abstract_builder import AbstractBuilder
 from http_client.core.http_client import HTTPClient
 from http_client.models.storages.task_queue import TaskQueue
-from http_client.task_handling.task_scheduler import TaskScheduler
+from http_client.background_workers.task_scheduler import TaskScheduler
 from settings import settings
 
 
