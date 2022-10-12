@@ -1,8 +1,8 @@
 from exceptions.client_exceptions import URLCantBeProcessed, ValidationException
-from http_client.background_workers.workers import TaskWorker
+from http_client.core.workers import TaskWorker
 from http_client.models.repositories.url_statuses_repository import URLStatusesRepository
 from http_client.models.storages.task_queue import TaskQueue
-from http_client.background_workers.task_scheduler import TaskScheduler
+from http_client.core.task_scheduler import TaskScheduler
 from http_client.utils.web_clients.url_info import URLInfoReceiver, URLResourceData
 
 

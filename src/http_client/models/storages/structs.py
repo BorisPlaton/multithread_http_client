@@ -67,7 +67,7 @@ class InProcessURLData(BaseURLData):
     @property
     def workers_amount(self) -> int:
         """Returns workers quantity that are processing current URL."""
-        return URLWorkersRepository.get_workers_amount(self.url)
+        return URLWorkersRepository().get_workers_amount(self.url)
 
     def add_downloaded_fragment(self, downloaded_content: DownloadedContent):
         """Adds a downloaded content to already existed content fragments."""

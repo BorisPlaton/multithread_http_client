@@ -19,7 +19,7 @@ def thread_lock(lock: Lock | Any):
 
 def instance_thread_lock(lock_name: str):
     """
-    Wraps called an instance method with instance's Lock.
+    Wraps a called instance method with instance's Lock.
     Gets it via `lock_name` parameter which shows an
     instance's field with Lock instance.
     """

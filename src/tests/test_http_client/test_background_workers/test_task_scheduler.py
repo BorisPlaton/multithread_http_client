@@ -1,6 +1,6 @@
 import pytest
 
-from http_client.background_workers.task_scheduler import TaskScheduler, Task
+from http_client.core.task_scheduler import TaskScheduler, Task
 from http_client.utils.web_clients.url_info import URLResourceData
 
 

@@ -1,35 +1,24 @@
-from _thread import RLock
-
-from http_client.utils.wrappers import thread_lock
+from http_client.utils.singleton import Singleton
 from http_client.models.storages.url_workers import URLWorkersStorage
 
 
-class URLWorkersRepository:
+class URLWorkersRepository(metaclass=Singleton):
     """The repository to access a DAO with URL workers statuses."""
 
     _storage = URLWorkersStorage
-    _lock = RLock()
 
-    @classmethod
-    @thread_lock(_lock)
-    def get_workers_amount(cls, url):
-        """Is thread-safe. Returns a workers amount."""
-        return cls._storage.get_workers_amount(url)
+    def get_workers_amount(self, url):
+        """Returns a workers amount."""
+        return self._storage.get_workers_amount(url)
 
-    @classmethod
-    @thread_lock(_lock)
-    def increase_workers(cls, url):
-        """Is thread-safe. Increases a workers amount."""
-        return cls._storage.increase_workers(url)
+    def increase_workers(self, url):
+        """Increases a workers amount."""
+        return self._storage.increase_workers(url)
 
-    @classmethod
-    @thread_lock(_lock)
-    def decrease_workers(cls, url):
-        """Is thread-safe. Decreases a workers amount."""
-        return cls._storage.decrease_workers(url)
+    def decrease_workers(self, url):
+        """Decreases a workers amount."""
+        return self._storage.decrease_workers(url)
 
-    @classmethod
-    @thread_lock(_lock)
-    def is_url_in_process(cls, url):
-        """Is thread-safe. Returns is URL processing."""
-        return cls._storage.is_url_in_process(url)
+    def is_url_in_process(self, url):
+        """Returns is a URL processing."""
+        return self._storage.is_url_in_process(url)

@@ -1,6 +1,6 @@
 import asyncio
 
-from http_client.background_workers.workers_manager import WorkersManager
+from http_client.core.workers_manager import WorkersManager
 from http_client.models.storages.url_pipe import URLPipe
 
 

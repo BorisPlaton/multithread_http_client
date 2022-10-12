@@ -1,6 +1,4 @@
-import time
-from threading import Thread
-from unittest.mock import MagicMock, patch
+from threading import RLock
 
 import pytest
 
@@ -14,8 +12,9 @@ class TestURLStatusesRepository:
 
     @pytest.fixture
     def repository(self):
-        yield URLStatusesRepository
-        URLStatusesRepository.restore()
+        repos = URLStatusesRepository()
+        yield repos
+        repos.restore()
 
     @pytest.fixture
     def storage(self, repository):
@@ -36,16 +35,6 @@ class TestURLStatusesRepository:
     @pytest.fixture
     def downloaded_content(self):
         return DownloadedContent(b'', 0)
-
-    @patch('http_client.models.repositories.url_statuses_repository.URLStatusesRepository._storage')
-    def test_repository_lock_is_locked(self, storage_mock: MagicMock, repository):
-        def sleep_func(*args, **kwargs):
-            time.sleep(0.01)
-
-        storage_mock.pop_url.side_effect = sleep_func
-        Thread(target=repository.pop_url, args='/').start()
-
-        assert not repository._lock.acquire(False)
 
     def test_is_downloaded_returns_false_if_not_downloaded(self, repository, discarded_url):
         repository.add_url(discarded_url)

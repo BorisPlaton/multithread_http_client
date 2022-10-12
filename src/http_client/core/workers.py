@@ -1,7 +1,7 @@
 from threading import Thread, Event, RLock
 
 from exceptions.client_exceptions import ContentWasNotDownloaded
-from http_client.background_workers.task_scheduler import Task
+from http_client.core.task_scheduler import Task
 from http_client.utils.web_clients.url_content import URLContentDownloader
 from http_client.utils.wrappers import instance_thread_lock
 from http_client.models.repositories.url_statuses_repository import URLStatusesRepository
@@ -40,16 +40,16 @@ class TaskWorker:
         Starts process task. Changes the workers amount of task's URL.
         Download content. If it fails to download, adds to discarded.
         """
-        URLWorkersRepository.increase_workers(task.url)
+        self._url_workers_repository.increase_workers(task.url)
         try:
             content = self.download_url_content(task)
-            URLStatusesRepository.add_downloaded_content(
+            self._url_repository.add_downloaded_content(
                 task.url, DownloadedContent(content, task.byte_range_start)
             )
         except ContentWasNotDownloaded as e:
-            URLStatusesRepository.add_url_to_discarded(task.url, e.detail)
+            self._url_repository.add_url_to_discarded(task.url, e.detail)
         finally:
-            URLWorkersRepository.decrease_workers(task.url)
+            self._url_workers_repository.decrease_workers(task.url)
 
     @staticmethod
     def download_url_content(task: Task) -> bytes:
@@ -83,3 +83,5 @@ class TaskWorker:
         self.task_queue = task_queue
         self._is_working = Event()
         self._lock = RLock()
+        self._url_repository = URLStatusesRepository()
+        self._url_workers_repository = URLWorkersRepository()
