@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from pathlib import Path
 
 
 @dataclass(frozen=True)
@@ -6,7 +7,7 @@ class HTTPClientSettings:
     """The settings of HTTP-client."""
     THREADS_AMOUNT = 4
     BYTES_AMOUNT = 2000
-    CONTENT_DIRECTORY = 'downloaded_content'
+    CONTENT_DIRECTORY = Path(__file__).parent.parent.parent / 'downloaded_content'
 
 
 @dataclass(frozen=True)

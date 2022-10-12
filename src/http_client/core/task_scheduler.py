@@ -13,7 +13,7 @@ class Task:
     @property
     def content_size(self):
         """Returns the total content length of task."""
-        return self.byte_range_end - self.byte_range_end
+        return self.byte_range_end - self.byte_range_start + 1
 
 
 class TaskScheduler:

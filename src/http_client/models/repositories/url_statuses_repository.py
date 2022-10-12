@@ -61,17 +61,23 @@ class URLStatusesRepository(metaclass=Singleton):
         """Returns if any URL data has the same URL path as given."""
         return self._storage.has_url(url)
 
-    def is_discarded(self, url: str) -> bool:
-        """Returns if any URL data has the same URL path as given."""
-        return isinstance(self.get_url(url), DiscardedURL)
+    def check_status(self, url: str | EXISTING_URL_TYPES, url_status: type[EXISTING_URL_TYPES]):
+        """Checks if URL data is a given status type."""
+        if isinstance(url, str):
+            url = self.get_url(url)
+        return isinstance(url, url_status)
 
-    def is_downloaded(self, url: str) -> bool:
-        """Returns if any URL data has the same URL path as given."""
-        return isinstance(self.get_url(url), DownloadedURLData)
+    def is_discarded(self, url_data: str | EXISTING_URL_TYPES) -> bool:
+        """Returns if URL is discarded."""
+        return self.check_status(url_data, DiscardedURL)
 
-    def is_in_process(self, url: str) -> bool:
-        """Returns if any URL data has the same URL path as given."""
-        return isinstance(self.get_url(url), InProcessURLData)
+    def is_downloaded(self, url_data: str | EXISTING_URL_TYPES) -> bool:
+        """Returns if URL is downloaded."""
+        return self.check_status(url_data, DownloadedURLData)
+
+    def is_in_process(self, url_data: str | EXISTING_URL_TYPES) -> bool:
+        """Returns if URL is in process."""
+        return self.check_status(url_data, InProcessURLData)
 
     def add_downloaded_content(self, url: str, downloaded_content: DownloadedContent):
         """Increases a downloaded content amount for the given URL data."""

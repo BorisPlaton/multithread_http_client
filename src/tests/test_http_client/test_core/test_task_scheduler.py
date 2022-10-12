@@ -34,3 +34,19 @@ class TestTaskScheduler:
         assert list(generated_tasks)
         for task in generated_tasks:
             assert isinstance(task, Task)
+
+
+@pytest.mark.http_client
+class TestTaskDataclass:
+
+    @pytest.mark.parametrize(
+        'byte_range_start, byte_range_end, expected_size',
+        [
+            [0, 499, 500],
+            [0, 0, 1],
+            [19, 40, 22],
+        ]
+    )
+    def test_task_content_size_property_calculated_correctly(self, byte_range_start, byte_range_end, expected_size):
+        task = Task('/', byte_range_start, byte_range_end)
+        assert task.content_size == expected_size

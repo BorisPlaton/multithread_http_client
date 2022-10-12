@@ -1,10 +1,14 @@
+from pathlib import Path
+
 from exceptions.client_exceptions import ValidationException
+from http_client.core.content_observer import ContentObserver
 from http_client.core.workers import TaskWorker
 from http_client.core.workers_manager import WorkersManager
 from http_client.utils.builders.abstract_builder import AbstractBuilder
 from http_client.core.http_client import HTTPClient
 from http_client.models.storages.task_queue import TaskQueue
 from http_client.core.task_scheduler import TaskScheduler
+from http_client.utils.file_saver import FileSaver
 from settings import settings
 
 
@@ -32,15 +36,17 @@ class WorkersManagerBuilder(AbstractBuilder):
         self.task_scheduler = TaskSchedulerBuilder.construct()
         self.task_queue = TaskQueue()
 
+        content_observer = ContentObserverBuilder.construct()
         self.workers = []
         for _ in range(settings.THREADS_AMOUNT):
             worker_builder = TaskWorkerBuilder()
             worker_builder.task_queue = self.task_queue
+            worker_builder.content_observer = content_observer
             self.workers.append(worker_builder.build())
 
     @staticmethod
     def validate_workers_list(value):
-        """Validates a `workers_amount` is greater than 0."""
+        """Validates a workers list."""
         if not value:
             raise ValidationException("The workers list can't be empty.")
         elif not all((map(lambda x: isinstance(x, TaskWorker), value))):
@@ -73,3 +79,26 @@ class TaskWorkerBuilder(AbstractBuilder):
 
     instance_class = TaskWorker
     task_queue: TaskQueue
+    content_observer: ContentObserver
+
+
+class FileSaverBuilder(AbstractBuilder):
+    """Builds a FileSaver instance."""
+
+    instance_class = FileSaver
+    files_directory: Path
+
+    def configure_instance(self):
+        """Sets a directory which will contain all downloaded content."""
+        self.files_directory = settings.CONTENT_DIRECTORY
+
+
+class ContentObserverBuilder(AbstractBuilder):
+    """Builds a ContentObserve instance."""
+
+    instance_class = ContentObserver
+    file_saver: FileSaver
+
+    def configure_instance(self):
+        """Sets a directory which will contain all downloaded content."""
+        self.file_saver = FileSaverBuilder.construct()

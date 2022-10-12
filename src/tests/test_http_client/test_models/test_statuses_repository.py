@@ -1,5 +1,3 @@
-from threading import RLock
-
 import pytest
 
 from http_client.models.repositories.url_statuses_repository import URLStatusesRepository

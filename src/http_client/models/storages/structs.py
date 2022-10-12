@@ -60,6 +60,14 @@ class InProcessURLData(BaseURLData):
         return sum([fragment.size for fragment in self.downloaded_fragments])
 
     @property
+    def downloaded_content(self) -> bytes:
+        """Returns all downloaded content as bytes."""
+        return sum(sorted(
+            [fragment.content for fragment in self.downloaded_fragments],
+            key=lambda x: x.byte_range_start
+        ))
+
+    @property
     def progress(self) -> float:
         """Returns the progress of content downloading in percents."""
         return round(self.downloaded_content_size / self.summary_size, 4) * 100

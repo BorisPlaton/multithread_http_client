@@ -1,6 +1,7 @@
 from threading import Thread, Event, RLock
 
 from exceptions.client_exceptions import ContentWasNotDownloaded
+from http_client.core.content_observer import ContentObserver
 from http_client.core.task_scheduler import Task
 from http_client.utils.web_clients.url_content import URLContentDownloader
 from http_client.utils.wrappers import instance_thread_lock
@@ -43,7 +44,7 @@ class TaskWorker:
         self._url_workers_repository.increase_workers(task.url)
         try:
             content = self.download_url_content(task)
-            self._url_repository.add_downloaded_content(
+            self.content_observer.accept_content(
                 task.url, DownloadedContent(content, task.byte_range_start)
             )
         except ContentWasNotDownloaded as e:
@@ -78,9 +79,10 @@ class TaskWorker:
             )
         self._is_working.set() if value else self._is_working.clear()
 
-    def __init__(self, task_queue: TaskQueue):
+    def __init__(self, task_queue: TaskQueue, content_observer: ContentObserver):
         """Saves a task queue which will be listened to."""
         self.task_queue = task_queue
+        self.content_observer = content_observer
         self._is_working = Event()
         self._lock = RLock()
         self._url_repository = URLStatusesRepository()
