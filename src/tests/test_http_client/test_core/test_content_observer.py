@@ -35,14 +35,8 @@ class TestContentObserver:
         observer.url_storage.restore()
 
     @pytest.fixture
-    def url_storage(self, content_observer):
-        return content_observer.url_storage
-
-    @pytest.fixture
-    def file_saver(self):
-        content_dir = Path(__file__).parent / 'test_content_dir'
-        yield FileSaver(content_dir)
-        self.delete_dir(content_dir)
+    def file_saver(self, content_dir):
+        return FileSaver(content_dir)
 
     @staticmethod
     def delete_dir(path_to_dir: Path):
@@ -94,12 +88,13 @@ class TestContentObserver:
         content_observer.save_as_file_if_ready(url)
         assert was_called
 
-    def test_new_record_of_url_progress_will_be_created_if_it_doesnt_exist(self, content_observer, url_storage):
+    def test_new_record_of_url_progress_will_be_created_if_it_doesnt_exist(self, content_observer,
+                                                                           url_statuses_repository):
         assert not content_observer.url_progress
         url = '/'
         total_size = 1000
         downloaded_size = 10
-        url_storage.add_url_to_in_process(url, total_size)
+        url_statuses_repository.add_url_to_in_process(url, total_size)
         content_observer.update_url_progress(url, downloaded_size)
         assert url in content_observer.url_progress
         url_progress = content_observer.url_progress[url]

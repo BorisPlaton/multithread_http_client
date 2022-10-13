@@ -34,7 +34,7 @@ class URLInfoReceiver(ResponseValidator):
     ]
 
     headers_to_return = {
-        'summary_length': HeaderData('Content-Length', int),
+        'summary_size': HeaderData('Content-Length', int),
     }
 
     @classmethod

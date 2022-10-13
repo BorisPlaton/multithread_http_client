@@ -24,8 +24,8 @@ class URLContentDownloader(ResponseValidator):
             return response.content
         except ValidationException as e:
             raise ContentWasNotDownloaded(e.detail)
-        except Exception:
-            raise ContentWasNotDownloaded
+        except Exception as e:
+            raise ContentWasNotDownloaded(str(e))
 
     @classmethod
     def send_request(cls, url: str, byte_range_start: int, byte_range_end: int) -> Response:

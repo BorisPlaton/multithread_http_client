@@ -3,7 +3,7 @@ from threading import RLock
 
 from exceptions.client_exceptions import URLDataException
 from http_client.models.repositories.url_statuses_repository import URLStatusesRepository
-from http_client.models.storages.structs import DownloadedContent, DownloadedURLData, InProcessURLData
+from http_client.models.storages.structs import DownloadedContent, InProcessURLData
 from http_client.utils.file_saver import FileSaver
 from http_client.utils.wrappers import instance_thread_lock
 

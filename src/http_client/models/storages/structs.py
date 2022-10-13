@@ -62,10 +62,12 @@ class InProcessURLData(BaseURLData):
     @property
     def downloaded_content(self) -> bytes:
         """Returns all downloaded content as bytes."""
-        return sum(sorted(
-            [fragment.content for fragment in self.downloaded_fragments],
-            key=lambda x: x.byte_range_start
-        ))
+        return b''.join([
+            fragment.content for fragment in sorted(
+                [fragment for fragment in self.downloaded_fragments],
+                key=lambda x: x.byte_range_start
+            )
+        ])
 
     @property
     def progress(self) -> float:

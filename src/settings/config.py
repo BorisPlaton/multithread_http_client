@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-@dataclass(frozen=True)
+@dataclass
 class HTTPClientSettings:
     """The settings of HTTP-client."""
     THREADS_AMOUNT = 4
@@ -10,12 +10,12 @@ class HTTPClientSettings:
     CONTENT_DIRECTORY = Path(__file__).parent.parent.parent / 'downloaded_content'
 
 
-@dataclass(frozen=True)
+@dataclass
 class WebsocketServerSettings:
     """The settings of Websocket server."""
     BROADCAST_TIMEOUT = 2
 
 
-@dataclass(frozen=True)
+@dataclass
 class ProjectSettings(HTTPClientSettings, WebsocketServerSettings):
     """Includes settings of all project instances."""

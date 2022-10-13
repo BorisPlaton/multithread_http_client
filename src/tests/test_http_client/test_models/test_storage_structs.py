@@ -62,6 +62,17 @@ class TestInProcessURLDataStruct:
             in_process_url.add_downloaded_fragment(fragment)
         assert in_process_url.downloaded_content_size == 23
 
+    def test_summary_downloaded_content_is_correct(self, in_process_url):
+        downloaded_fragments = [
+            DownloadedContent(b'123456789', byte_range_start=0),
+            DownloadedContent(b'12345', byte_range_start=9),
+            DownloadedContent(b'1234567', byte_range_start=15),
+            DownloadedContent(b'12', byte_range_start=18),
+        ]
+        for fragment in downloaded_fragments:
+            in_process_url.add_downloaded_fragment(fragment)
+        assert in_process_url.downloaded_content == b'12345678912345123456712'
+
     def test_progress_is_evaluated_correct(self):
         in_process = InProcessURLData('/', 100)
         downloaded_fragments = [

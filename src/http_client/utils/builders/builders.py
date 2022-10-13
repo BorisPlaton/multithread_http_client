@@ -81,6 +81,11 @@ class TaskWorkerBuilder(AbstractBuilder):
     task_queue: TaskQueue
     content_observer: ContentObserver
 
+    def configure_instance(self):
+        """Sets bytes amount from the settings."""
+        self.task_queue = TaskQueue()
+        self.content_observer = ContentObserverBuilder.construct()
+
 
 class FileSaverBuilder(AbstractBuilder):
     """Builds a FileSaver instance."""

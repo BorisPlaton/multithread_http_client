@@ -4,7 +4,7 @@ import pytest
 from multidict import CIMultiDictProxy
 
 from exceptions.base import ApplicationException
-from http_client.utils.web_clients.url_info import URLInfoReceiver, HeaderData
+from http_client.utils.web_clients.url_info import URLInfoReceiver, HeaderData, URLResourceData
 
 
 @pytest.mark.http_client
@@ -66,3 +66,7 @@ class TestURLInfoReceiver:
         headers, status_code = await info_receiver.send_request('https://google.com')
         assert isinstance(headers, CIMultiDictProxy)
         assert isinstance(status_code, int)
+
+    def test_headers_to_return_has_the_same_values_as_url_resource_data(self, info_receiver):
+        for key in info_receiver.headers_to_return.keys():
+            assert key in URLResourceData.__annotations__

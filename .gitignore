@@ -5,3 +5,4 @@ auto-restart.sh
 .pytest_cache
 htmlcov
 .coverage
+downloaded_content

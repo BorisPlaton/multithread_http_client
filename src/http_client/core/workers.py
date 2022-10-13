@@ -17,14 +17,19 @@ class TaskWorker:
     content from given URL and saves it.
     """
 
+    @instance_thread_lock('_lock')
     def start(self):
         """Starts a worker's activity."""
-        self.is_working = True
-        Thread(target=self.listen_queue).start()
+        if not self._thread.is_alive():
+            self.is_working = True
+            self._thread.start()
 
+    @instance_thread_lock('_lock')
     def stop(self):
         """Stops the worker."""
-        self.is_working = False
+        if self._thread.is_alive():
+            self.is_working = False
+            self._thread = self._get_thread_instance()
 
     def listen_queue(self):
         """
@@ -79,10 +84,14 @@ class TaskWorker:
             )
         self._is_working.set() if value else self._is_working.clear()
 
+    def _get_thread_instance(self) -> Thread:
+        return Thread(target=self.listen_queue)
+
     def __init__(self, task_queue: TaskQueue, content_observer: ContentObserver):
         """Saves a task queue which will be listened to."""
         self.task_queue = task_queue
         self.content_observer = content_observer
+        self._thread = self._get_thread_instance()
         self._is_working = Event()
         self._lock = RLock()
         self._url_repository = URLStatusesRepository()

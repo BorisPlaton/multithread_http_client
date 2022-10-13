@@ -10,13 +10,13 @@ class HTTPClient:
     in background.
     """
 
-    def start(self):
+    async def start(self):
         """
         Spawns background workers and starts listening a URL pipe
         for new URL.
         """
         self.workers_manager.start_workers()
-        asyncio.create_task(self.listen_for_new_url())
+        await self.listen_for_new_url()
 
     async def listen_for_new_url(self):
         """
@@ -24,8 +24,11 @@ class HTTPClient:
         workers' handler.
         """
         while True:
-            added_url = await URLPipe.pop()
-            asyncio.create_task(self.workers_manager.dispatch_url(added_url))
+            self.add_url_to_dispatcher(await URLPipe.pop())
+
+    def add_url_to_dispatcher(self, url: str):
+        """Creates a new task to execute it asynchronously."""
+        return asyncio.create_task(self.workers_manager.dispatch_url(url))
 
     def __init__(self, workers_manager: WorkersManager):
         self.workers_manager = workers_manager

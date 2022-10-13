@@ -10,10 +10,8 @@ from http_client.utils.file_saver import FileSaver
 class TestFileSaver:
 
     @pytest.fixture
-    def file_saver(self):
-        content_dir = Path(__file__).parent / 'test_content_dir'
-        yield FileSaver(content_dir)
-        self.delete_dir(content_dir)
+    def file_saver(self, content_dir):
+        return FileSaver(content_dir)
 
     @pytest.fixture
     def content(self):
