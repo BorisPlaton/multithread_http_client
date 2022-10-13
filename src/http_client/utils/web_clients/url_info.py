@@ -21,7 +21,7 @@ class HeaderData(NamedTuple):
 class URLResourceData:
     """Stores all necessary information about an url resource."""
     url: str
-    summary_length: int
+    summary_size: int
 
 
 class URLInfoReceiver(ResponseValidator):

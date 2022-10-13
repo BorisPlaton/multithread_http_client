@@ -11,11 +11,11 @@ class ContentWasNotDownloaded(BaseClientException):
     detail = "URL content hasn't been downloaded."
 
 
-class URLNotInProcess(BaseClientException):
+class URLDataException(BaseClientException):
     """The exception class for url validators."""
-    detail = "URL content is not processed by any worker."
+    detail = "Exception is risen due to the status of URL."
 
 
 class URLDoesntExist(BaseClientException):
     """The exception class for url validators."""
-    detail = "URL content is already downloaded or is discarded."
+    detail = "URL doesn't exist."

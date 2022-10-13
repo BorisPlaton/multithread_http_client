@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from threading import RLock
 
-from exceptions.client_exceptions import URLNotInProcess
+from exceptions.client_exceptions import URLDataException
 from http_client.models.repositories.url_statuses_repository import URLStatusesRepository
 from http_client.models.storages.structs import DownloadedContent, DownloadedURLData, InProcessURLData
 from http_client.utils.file_saver import FileSaver
@@ -45,7 +45,7 @@ class ContentObserver:
             if url not in self.url_progress:
                 self.url_progress[url] = ContentSizeProgress(self.get_url_content_summary_size(url))
             self.url_progress[url].downloaded_size += size
-        except URLNotInProcess:
+        except URLDataException:
             pass
 
     def save_as_file_if_ready(self, url: str):
@@ -57,7 +57,7 @@ class ContentObserver:
     def get_url_content_summary_size(self, url) -> int:
         url_data = self.url_storage.get_url(url)
         if not self.url_storage.is_in_process(url_data):
-            raise URLNotInProcess("URL is not in process. Thus, it doesn't have the size of content.")
+            raise URLDataException("URL is not in process. Thus, it doesn't have the size of content.")
         return url_data.summary_size
 
     def save_as_file(self, url: str):

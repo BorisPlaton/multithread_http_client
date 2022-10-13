@@ -30,7 +30,7 @@ class TestTaskScheduler:
         assert list(scheduler.generate_byte_ranges(total_content_length)) == byte_ranges
 
     def test_task_generation(self, scheduler, url_resource_data):
-        generated_tasks = list(scheduler.generate_new_tasks(url_resource_data.url, url_resource_data.summary_length))
+        generated_tasks = list(scheduler.generate_new_tasks(url_resource_data.url, url_resource_data.summary_size))
         assert list(generated_tasks)
         for task in generated_tasks:
             assert isinstance(task, Task)

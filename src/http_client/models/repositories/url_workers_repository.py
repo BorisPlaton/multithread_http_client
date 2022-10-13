@@ -22,3 +22,7 @@ class URLWorkersRepository(metaclass=Singleton):
     def is_url_in_process(self, url):
         """Returns is a URL processing."""
         return self._storage.is_url_in_process(url)
+
+    def restore(self):
+        """Restore self storage."""
+        self._storage.delete_all()

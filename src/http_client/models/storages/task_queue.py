@@ -27,6 +27,12 @@ class TaskQueue:
         """Returns if the queue is not empty."""
         return bool(self.queue)
 
+    def __iter__(self):
+        return iter(self.queue)
+
+    def __bool__(self):
+        return bool(self.queue)
+
     def __init__(self):
         self.queue = deque()
         self.lock = RLock()

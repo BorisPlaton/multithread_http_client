@@ -4,7 +4,7 @@ from unittest.mock import patch, MagicMock
 
 import pytest
 
-from exceptions.client_exceptions import URLNotInProcess
+from exceptions.client_exceptions import URLDataException
 from http_client.core.content_observer import ContentSizeProgress, ContentObserver
 from http_client.utils.file_saver import FileSaver
 
@@ -108,5 +108,5 @@ class TestContentObserver:
         assert url_progress.downloaded_size == downloaded_size
 
     def test_if_url_is_not_in_process_exception_is_raised(self, content_observer):
-        with pytest.raises(URLNotInProcess):
+        with pytest.raises(URLDataException):
             content_observer.get_url_content_summary_size('/')
