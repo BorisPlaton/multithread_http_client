@@ -30,6 +30,7 @@ class TestBuilders:
 
     def test_task_worker_is_built(self):
         worker_builder = TaskWorkerBuilder()
+        assert TaskQueue()._lock
         worker_builder.task_queue = TaskQueue()
         worker_builder.content_observer = ContentObserverBuilder.construct()
         assert isinstance(worker_builder.build(), TaskWorker)

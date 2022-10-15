@@ -1,8 +1,8 @@
-from http_client.utils.singleton import Singleton
+from http_client.utils.metaclasses import ThreadSafeSingleton
 from http_client.models.storages.url_workers import URLWorkersStorage
 
 
-class URLWorkersRepository(metaclass=Singleton):
+class URLWorkersRepository(metaclass=ThreadSafeSingleton):
     """The repository to access a DAO with URL workers statuses."""
 
     _storage = URLWorkersStorage

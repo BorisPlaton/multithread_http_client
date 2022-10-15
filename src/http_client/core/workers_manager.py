@@ -1,5 +1,5 @@
 from exceptions.base import ApplicationException
-from exceptions.client_exceptions import URLDataException, ValidationException
+from exceptions.client_exceptions import URLDataException
 from http_client.core.workers import TaskWorker
 from http_client.models.repositories.url_statuses_repository import URLStatusesRepository
 from http_client.models.storages.task_queue import TaskQueue

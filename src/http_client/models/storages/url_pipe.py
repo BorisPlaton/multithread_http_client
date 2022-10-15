@@ -1,17 +1,18 @@
 from asyncio import Queue
 
+from http_client.utils.metaclasses import Singleton
 
-class URLPipe:
+
+class URLPipe(metaclass=Singleton):
     """The async pipe for adding new urls to download."""
 
-    queue = Queue()
-
-    @classmethod
-    async def push(cls, url_to_download: str):
+    async def push(self, url_to_download: str):
         """Adds a new url to the pipe."""
-        await cls.queue.put(url_to_download)
+        await self.queue.put(url_to_download)
 
-    @classmethod
-    async def pop(cls) -> str:
+    async def pop(self) -> str:
         """Pops an added url or waits until a new one will be added."""
-        return await cls.queue.get()
+        return await self.queue.get()
+
+    def __init__(self):
+        self.queue = Queue()

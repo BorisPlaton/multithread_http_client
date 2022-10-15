@@ -1,11 +1,11 @@
-from http_client.utils.singleton import Singleton
+from http_client.utils.metaclasses import ThreadSafeSingleton
 from http_client.models.storages.structs import (
     DiscardedURL, InProcessURLData, DownloadedURLData, DownloadedContent
 )
 from http_client.models.storages.url_statuses import URLStatusesStorage, EXISTING_URL_TYPES
 
 
-class URLStatusesRepository(metaclass=Singleton):
+class URLStatusesRepository(metaclass=ThreadSafeSingleton):
     """
     The repository to interact with a URL storage. Has additional
     methods.
