@@ -5,8 +5,8 @@ class PathDoesNotExist(BaseServerException):
     detail = "The provided url doesn't exist."
 
 
-class RequestDataIsNotJSON(BaseServerException):
-    detail = "You must to specify request data in JSON format."
+class WrongRequestData(BaseServerException):
+    detail = "The request data is wrong."
 
 
 class ResponseIsNotValidType(BaseServerException):

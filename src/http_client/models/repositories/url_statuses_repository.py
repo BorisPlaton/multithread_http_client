@@ -1,6 +1,6 @@
 from http_client.utils.metaclasses import ThreadSafeSingleton
 from http_client.models.storages.structs import (
-    DiscardedURL, InProcessURLData, DownloadedURLData, DownloadedContent
+    DiscardedURL, InProcessURLData, DownloadedURLData, DownloadedContent, PendingURL
 )
 from http_client.models.storages.url_statuses import URLStatusesStorage, EXISTING_URL_TYPES
 
@@ -20,6 +20,10 @@ class URLStatusesRepository(metaclass=ThreadSafeSingleton):
         """
         self._storage.pop_url(url_data.url)
         return self._storage.add_url(url_data)
+
+    def add_url_to_pending(self, url):
+        """Adds a URL to the pending ones."""
+        return self.add_url(PendingURL(url))
 
     def add_url_to_discarded(self, url: str, reason: str):
         """Sets URL is discarded."""
@@ -56,6 +60,10 @@ class URLStatusesRepository(metaclass=ThreadSafeSingleton):
         returns None.
         """
         return self._storage.get_url_data(url)
+
+    def get_all_url(self) -> list[EXISTING_URL_TYPES]:
+        """Returns all URLs that are in the storage."""
+        return list(self._storage.get_all_url())
 
     def has_url(self, url: str) -> bool:
         """Returns if any URL data has the same URL path as given."""

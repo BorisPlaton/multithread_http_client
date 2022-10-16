@@ -84,16 +84,4 @@ class TestInProcessURLDataStruct:
 
         for fragment in downloaded_fragments:
             in_process.add_downloaded_fragment(fragment)
-        assert in_process.progress == 17
-
-    def test_progress_has_two_digit_after_comma(self):
-        in_process = InProcessURLData('/', 24)
-        downloaded_fragments = [
-            DownloadedContent(b'12345', byte_range_start=0),
-            DownloadedContent(b'12345', byte_range_start=0),
-            DownloadedContent(b'12345', byte_range_start=0),
-            DownloadedContent(b'12', byte_range_start=0),
-        ]
-        for fragment in downloaded_fragments:
-            in_process.add_downloaded_fragment(fragment)
-        assert len(str(in_process.progress).split('.')[1]) == 2
+        assert in_process.progress == 0.17

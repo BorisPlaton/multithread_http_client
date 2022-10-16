@@ -7,9 +7,13 @@ from http_client.models.repositories.url_workers_repository import URLWorkersRep
 
 class ProcessStatus(Enum):
     """Defines the statuses of URL download work."""
+    PENDING = 'In Pending'
     DISCARDED = 'Discarded'
-    IN_PROCESS = 'In process'
+    IN_PROCESS = 'In Process'
     DOWNLOADED = 'Downloaded'
+
+    def __repr__(self):
+        return self.value
 
 
 @dataclass
@@ -32,6 +36,13 @@ class BaseURLData:
     """The base information about URL work. Is hashable."""
     url: str
 
+    @property
+    def info(self) -> dict:
+        """Returns base information about URL."""
+        base_data = {}
+        base_data.update(vars(self))
+        return base_data
+
 
 @dataclass(frozen=True)
 class DiscardedURL(BaseURLData):
@@ -48,11 +59,28 @@ class DownloadedURLData(BaseURLData):
 
 
 @dataclass(frozen=True)
+class PendingURL(BaseURLData):
+    """Indicates that URL is still pending."""
+    process_status: ProcessStatus = ProcessStatus.PENDING
+
+
+@dataclass(frozen=True)
 class InProcessURLData(BaseURLData):
     """The information about a download work that is still in process."""
     summary_size: int
     downloaded_fragments: list[DownloadedContent] = field(default_factory=list, compare=False, hash=False)
     process_status: ProcessStatus = ProcessStatus.IN_PROCESS
+
+    @property
+    def info(self):
+        base_data = super().info
+        base_data.pop('downloaded_fragments')
+        base_data.update({
+            'progress': self.progress,
+            'downloaded_content_size': self.downloaded_content_size,
+            'workers_amount': self.workers_amount,
+        })
+        return base_data
 
     @property
     def downloaded_content_size(self) -> int:
@@ -72,7 +100,7 @@ class InProcessURLData(BaseURLData):
     @property
     def progress(self) -> float:
         """Returns the progress of content downloading in percents."""
-        return round(self.downloaded_content_size / self.summary_size, 4) * 100
+        return round(self.downloaded_content_size / self.summary_size, 4)
 
     @property
     def workers_amount(self) -> int:

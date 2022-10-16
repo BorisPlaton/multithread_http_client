@@ -5,15 +5,15 @@ from pathlib import Path
 @dataclass
 class HTTPClientSettings:
     """The settings of HTTP-client."""
-    THREADS_AMOUNT = 4
-    BYTES_AMOUNT = 2000
+    THREADS_AMOUNT = 3
+    BYTES_AMOUNT = 2
     CONTENT_DIRECTORY = Path(__file__).parent.parent.parent / 'downloaded_content'
 
 
 @dataclass
 class WebsocketServerSettings:
     """The settings of Websocket server."""
-    BROADCAST_TIMEOUT = 2
+    BROADCAST_TIMEOUT = 3
 
 
 @dataclass

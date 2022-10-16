@@ -1,7 +1,7 @@
-from http_client.models.storages.structs import DownloadedURLData, DiscardedURL, InProcessURLData
+from http_client.models.storages.structs import DownloadedURLData, DiscardedURL, InProcessURLData, PendingURL
 
 
-EXISTING_URL_TYPES = InProcessURLData | DiscardedURL | DownloadedURLData
+EXISTING_URL_TYPES = InProcessURLData | DiscardedURL | DownloadedURLData | PendingURL
 
 
 class URLStatusesStorage:
@@ -42,6 +42,11 @@ class URLStatusesStorage:
             return [url_data for url_data in cls.urls if url_data.url == url][0]
         except IndexError:
             pass
+
+    @classmethod
+    def get_all_url(cls) -> set[EXISTING_URL_TYPES]:
+        """Returns all stored URLs."""
+        return cls.urls
 
     @classmethod
     def has_url(cls, url: str) -> bool:

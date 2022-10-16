@@ -2,10 +2,10 @@ import json
 
 from exceptions.base import BaseServerException
 from exceptions.exception_handlers import (
-    StandardExceptionHandler, ServerExceptionHandler, BaseExceptionHandler
+    StandardExceptionHandler, ServerExceptionHandler, BaseExceptionHandler, ExceptionResponse
 )
 from ws_server.core.structs import Request, Response
-from ws_server.paths.app_paths import paths
+from ws_server.paths.app_paths import paths, AppPath
 from ws_server.paths.paths_handler import PathsHandler
 
 
@@ -14,33 +14,49 @@ class Dispatcher:
     Dispatches an incoming request to the corresponding handler.
     """
 
-    def dispatch_request(self, request: Request):
+    async def dispatch_request_message(self, message: str, path: AppPath) -> str:
         """
         Dispatches an incoming request and returns a handler's response.
         """
+        handler_response = await self.get_handler_response(message, path)
+        return handler_response
+
+    async def get_handler_response(self, message: str, path: AppPath) -> str:
+        """
+        Gets a handler response. If some exception is raised, returns
+        an exception handler's response.
+        """
         try:
-            path_handler = self.existing_paths[request.path]
-            handler_response = path_handler(request)
+            request = Request(message)
+            path_handler = self.existing_paths[path]
+            return self.serialize_response(await path_handler.execute(request))
         except Exception as e:
-            exception_handler = self.get_exception_handler(e)
-            handler_response = exception_handler(e, request)
-        return self.serialize_response(handler_response)
+            return self.serialize_response(self.process_exception(e))
+
+    def process_exception(self, exception: Exception) -> ExceptionResponse:
+        """Returns a response from the exception handler."""
+        try:
+            exception_handler = self.get_exception_handler(exception)
+            return exception_handler(exception)
+        except Exception as e:
+            return self.process_exception(e)
 
     @staticmethod
-    def serialize_response(response: Response) -> str:
-        """Serializes a handler's response to string."""
-        response_data_in_string = json.dumps(response.data)
-        return response_data_in_string
+    def serialize_response(response: Response | ExceptionResponse) -> str:
+        """Serializes response to a string."""
+        return json.dumps(vars(response), default=repr)
 
     @staticmethod
     def get_exception_handler(exception: Exception) -> BaseExceptionHandler:
         """
-        The factory method that returns an appropriate exception handler
-        to process an occurred exception.
+        The factory method that returns an appropriate exception
+        handler.
         """
-        if issubclass(exception.__class__, BaseServerException):
-            return ServerExceptionHandler()
-        return StandardExceptionHandler()
+        return (
+            ServerExceptionHandler()
+            if issubclass(exception.__class__, BaseServerException)
+            else StandardExceptionHandler()
+        )
 
     def __init__(self):
         """Saves all existing paths in the project."""

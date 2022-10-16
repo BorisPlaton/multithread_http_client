@@ -1,16 +1,15 @@
-from dataclasses import dataclass
+from enum import auto, Enum
 
 from ws_server.handlers.handlers import AddNewUrlHandler, HTTPClientStatusHandler
 
 
-@dataclass
-class AppPath:
+class AppPath(Enum):
     """Defines urls that are used in the application."""
-    LISTEN_TO_STATUS = '/'
-    ADD_NEW_URL = '/new_url'
+    LISTEN_TO_STATUS = auto()
+    ADD_NEW_URL = auto()
 
 
 paths = {
-    AppPath.LISTEN_TO_STATUS: HTTPClientStatusHandler.setup(),
-    AppPath.ADD_NEW_URL: AddNewUrlHandler.setup(),
+    AppPath.LISTEN_TO_STATUS: HTTPClientStatusHandler(),
+    AppPath.ADD_NEW_URL: AddNewUrlHandler(),
 }

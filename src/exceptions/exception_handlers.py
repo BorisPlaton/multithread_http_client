@@ -1,10 +1,9 @@
-from typing import TypedDict
-
-from ws_server.core.structs import Request, Response
+from dataclasses import dataclass
 from exceptions.base import BaseServerException
 
 
-class ExceptionResponse(TypedDict):
+@dataclass
+class ExceptionResponse:
     status: str
     message: str
 
@@ -15,7 +14,7 @@ class BaseExceptionHandler:
     interface which descendants must implement.
     """
 
-    def __call__(self, exception: Exception | BaseServerException, request: Request) -> Response:
+    def __call__(self, exception: Exception | BaseServerException) -> ExceptionResponse:
         """
         The exception handler is a callable object. All necessary operations are
         performed here to return an appropriate response.
@@ -31,26 +30,14 @@ class ServerExceptionHandler(BaseExceptionHandler):
     a normal response.
     """
 
-    def __call__(self, exception: BaseServerException, request: Request):
+    def __call__(self, exception: BaseServerException):
         """Returns a response with server exception data."""
-        return Response(self.get_server_exception_info(exception))
-
-    @staticmethod
-    def get_server_exception_info(exception: BaseServerException) -> ExceptionResponse:
-        """Constructs a dictionary from exception data."""
-        return {"status": "error", "message": exception.detail}
+        return ExceptionResponse("error", exception.detail)
 
 
 class StandardExceptionHandler(BaseExceptionHandler):
     """Handles standard python exceptions occurred in the application."""
 
-    def __call__(self, exception: Exception, request: Request):
+    def __call__(self, exception: Exception):
         """Returns a response with data of standard exception."""
-        return Response(data=self.get_exception_info(exception))
-
-    @staticmethod
-    def get_exception_info(exception: Exception) -> ExceptionResponse:
-        """
-        Returns dictionary with an exception representation.
-        """
-        return {"status": "error", "message": str(exception)}
+        return ExceptionResponse("error", str(exception))

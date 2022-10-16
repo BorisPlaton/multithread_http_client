@@ -24,7 +24,7 @@ class HTTPClient:
         workers' handler.
         """
         while True:
-            self.add_url_to_dispatcher(await URLPipe.pop())
+            self.add_url_to_dispatcher(await self.url_pipe.pop())
 
     def add_url_to_dispatcher(self, url: str):
         """Creates a new task to execute it asynchronously."""
@@ -32,3 +32,4 @@ class HTTPClient:
 
     def __init__(self, workers_manager: WorkersManager):
         self.workers_manager = workers_manager
+        self.url_pipe = URLPipe()
