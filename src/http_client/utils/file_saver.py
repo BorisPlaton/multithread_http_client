@@ -16,7 +16,7 @@ class FileSaver:
         except FileNotFoundError:
             self.create_directory(self.files_directory)
             return self.save_content_to_file_system(content, filename)
-        return str(path_to_file.resolve())
+        return str(path_to_file.as_uri())
 
     @staticmethod
     def create_directory(directory_path: Path):
